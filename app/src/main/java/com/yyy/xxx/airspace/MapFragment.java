@@ -1,10 +1,15 @@
 package com.yyy.xxx.airspace;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yyy.xxx.airspace.Model.MapInfo;
 import com.yyy.xxx.airspace.search.Item;
 import com.yyy.xxx.airspace.search.OnFinishSearchListener;
 import com.yyy.xxx.airspace.search.Searcher;
@@ -33,50 +39,66 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener{
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = null;
+    private static final String ARG_PARAM2 = null;
 
     public static final String API_KEY = "c230fe73a3ea6267acd784b910b96593";
+    private static final String TAG = "MapFragment";
 
     private String mParam1;
     private String mParam2;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
 
-    MapView mapView;
+    private MapView mapView;
 
-    @Bind(R.id.edit_search_place)
-    EditText edit_Search;
+    private EditText edit_Search;
 
-    @Bind(R.id.button_search_place)
-    Button btn_Search;
+    private Button btn_Search;
+    private MapPOIItem mDefaultMarker;
+    private MapPOIItem mCustomMarker;
+    private MapPOIItem mCustomBmMarker;
 
-//    private OnFragmentInteractionListener mListener;
 
-    public MapFragment() {
-        // Required empty public constructor
+    // CalloutBalloonAdapter 인터페이스 구현
+    class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
+        private final View mCalloutBalloon;
+
+        public CustomCalloutBalloonAdapter() {
+            mCalloutBalloon = View.inflate(getActivity(), R.layout.custom_callout_balloon, null);
+        }
+
+        @Override
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+            ((ImageView) mCalloutBalloon.findViewById(R.id.badge)).setImageResource(R.drawable.ic_launcher);
+            ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
+            return mCalloutBalloon;
+        }
+
+        @Override
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            return null;
+        }
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static MapFragment newInstance(String param1, String param2) {
+    private OnFragmentInteractionListener mListener;
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(MapPoint point);
+    }
+
+    public MapFragment() {
+
+    }
+
+    public static MapFragment newInstance(Double param1, Double param2) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putDouble(ARG_PARAM1, param1);
+        args.putDouble(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,10 +107,9 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getDouble(ARG_PARAM1);
+//            mParam2 = getArguments().getDouble(ARG_PARAM2);
         }
-        ButterKnife.bind(getActivity());
     }
 
     @Override
@@ -99,13 +120,12 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         mapView = (MapView) view.findViewById(R.id.map_view);
         btn_Search = (Button) view.findViewById(R.id.button_search_place);
-
+        edit_Search = (EditText) view.findViewById(R.id.edit_search_place);
 
         mapView.setDaumMapApiKey(API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
-
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter2());
 
 
         btn_Search.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +151,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                     @Override
                     public void onSuccess(List<Item> itemList) {
                         mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
-                        //TODO 여기서 게시판 만들기.
                         showResult(itemList); // 검색 결과 보여줌
                     }
 
@@ -186,22 +205,23 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             }
         }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
+    public void onButtonPressed(MapPoint point) {
+        if (mListener != null) {
+
+            mListener.onFragmentInteraction(point);
+
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -212,7 +232,8 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
-
+        // MapView had loaded. Now, MapView APIs could be called safely.
+        Log.i(TAG, "onMapViewInitialized");
     }
 
     @Override
@@ -237,7 +258,81 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
 
+        Double latitude = mapPointGeo.latitude;
+        Double longitude = mapPointGeo.longitude;
+
+        MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
+        mapView.removeAllPOIItems();
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+        createDefaultMarker(mapView, mapPoint);
+        createCustomMarker(mapView, mapPoint);
+
+        showAll(mapPoint);
+
+        MapInfo.getInstance().setMapPoint(mapPoint);
+        Log.d(TAG, "맵포인트 입력완료" + mapPoint.getMapPointGeoCoord().longitude +"/"+mapPoint.getMapPointGeoCoord().latitude);
+//        mTapTextView.setText("long pressed, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
+//        Log.i(TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
+    }
+
+    private void createDefaultMarker(MapView mapView, MapPoint point) {
+        mDefaultMarker = new MapPOIItem();
+        String name = "Default Marker";
+        mDefaultMarker.setItemName(name);
+        mDefaultMarker.setTag(0);
+        mDefaultMarker.setMapPoint(point);
+        mDefaultMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+        mDefaultMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+        mapView.addPOIItem(mDefaultMarker);
+        mapView.selectPOIItem(mDefaultMarker, true);
+        mapView.setMapCenterPoint(point, false);
+    }
+
+    private void createCustomMarker(MapView mapView, MapPoint point) {
+        mCustomMarker = new MapPOIItem();
+        String name = "Custom Marker";
+        mCustomMarker.setItemName(name);
+        mCustomMarker.setTag(1);
+        mCustomMarker.setMapPoint(point);
+
+        mCustomMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+
+        mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
+        mCustomMarker.setCustomImageAutoscale(false);
+        mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
+
+        mapView.addPOIItem(mCustomMarker);
+        mapView.selectPOIItem(mCustomMarker, true);
+        mapView.setMapCenterPoint(point, false);
+    }
+
+    private void createCustomBitmapMarker(MapView mapView, MapPoint point) {
+        mCustomBmMarker = new MapPOIItem();
+        String name = "Custom Bitmap Marker";
+        mCustomBmMarker.setItemName(name);
+        mCustomBmMarker.setTag(2);
+        mCustomBmMarker.setMapPoint(point);
+
+        mCustomBmMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.custom_marker_star);
+        mCustomBmMarker.setCustomImageBitmap(bm);
+        mCustomBmMarker.setCustomImageAutoscale(false);
+        mCustomBmMarker.setCustomImageAnchor(0.5f, 0.5f);
+
+        mapView.addPOIItem(mCustomBmMarker);
+        mapView.selectPOIItem(mCustomBmMarker, true);
+        mapView.setMapCenterPoint(point, false);
+    }
+
+    private void showAll(MapPoint point) {
+        int padding = 20;
+        float minZoomLevel = 1;
+        float maxZoomLevel = 10;
+        MapPointBounds bounds = new MapPointBounds(point, point);
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(bounds, padding, minZoomLevel, maxZoomLevel));
     }
 
     @Override
@@ -257,7 +352,35 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        //TODO 해당 좌표를 대쉬보드로 넘기고 여기에서 했던 일들을 기록.
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.map_review_title)
+                .setMessage(R.string.map_confirm_review)
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        double latitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().latitude;
+                        double longitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().longitude;
+                        //지도에서 ADD하는 부분으로 넘기기
+                        MapFragment.newInstance(latitude, longitude);
+                        Intent intent = new Intent(getActivity(), Add_BoardActivity.class);
+                        startActivity(intent);
+
+                        mListener.onFragmentInteraction(MapInfo.getInstance().getMapPoint());
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -275,16 +398,13 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
-    class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
+
+    class CustomCalloutBalloonAdapter2 implements CalloutBalloonAdapter {
 
         private final View mCalloutBalloon;
 
-        public CustomCalloutBalloonAdapter() {
+        public CustomCalloutBalloonAdapter2() {
             mCalloutBalloon = View.inflate(getContext(),R.layout.custom_callout_balloon,null);
         }
 

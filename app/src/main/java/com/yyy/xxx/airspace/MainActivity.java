@@ -9,10 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import net.daum.mf.map.api.MapPoint;
+
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, MapFragment.OnFragmentInteractionListener {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -21,13 +22,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     private MapFragment mMapFragment;
 
-    @Bind(R.id.container)
+//    @BindView(R.id.container)
     ViewPager mViewPager;
 
-    @Bind(R.id.toolbar)
+//    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.navigation)
+//    @BindView(R.id.navigation)
     BottomNavigationView navigation;
 
     ViewPageAdapter mViewPageAdapter;
@@ -40,7 +41,11 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         setSupportActionBar(toolbar);
 
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
+
         mViewPager.setAdapter(mViewPageAdapter);
         mViewPager.addOnPageChangeListener(this);
         mViewPager.setCurrentItem(0);
@@ -92,5 +97,11 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onFragmentInteraction(MapPoint point) {
+        mViewPager.setCurrentItem(1);
+        BoardFragment.newInstance(point, null);
     }
 }

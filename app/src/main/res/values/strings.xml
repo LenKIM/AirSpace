@@ -6,4 +6,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="map_confirm_review">해당 장소에 대한 기록을 남기시겠습니까?</string>
+    <string name="map_review_title">흔적 남기기</string>
+    <string name="confirm">확인</string>
 </resources>
