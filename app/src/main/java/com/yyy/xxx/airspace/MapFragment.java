@@ -39,6 +39,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+
 
 public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener{
 
@@ -53,9 +55,11 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
 
-    private MapView mapView;
+    @BindView(R.id.map_view)
+    MapView mapView;
 
-    private EditText edit_Search;
+    @BindView(R.id.button_search_place)
+    EditText edit_Search;
 
     private Button btn_Search;
     private MapPOIItem mDefaultMarker;
@@ -94,11 +98,11 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     }
 
-    public static MapFragment newInstance(Double param1, Double param2) {
+    public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-        args.putDouble(ARG_PARAM1, param1);
-        args.putDouble(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,8 +111,8 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getDouble(ARG_PARAM1);
-//            mParam2 = getArguments().getDouble(ARG_PARAM2);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -353,7 +357,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
         //TODO 해당 좌표를 대쉬보드로 넘기고 여기에서 했던 일들을 기록.
-
+        // 꼬리꼬리 꼬리에 해당하는 것임.!
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.map_review_title)
                 .setMessage(R.string.map_confirm_review)
@@ -364,8 +368,10 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                         double latitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().latitude;
                         double longitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().longitude;
                         //지도에서 ADD하는 부분으로 넘기기
-                        MapFragment.newInstance(latitude, longitude);
-                        Intent intent = new Intent(getActivity(), Add_BoardActivity.class);
+//                        MapFragment.newInstance(latitude, longitude);
+                        Intent intent = new Intent(getActivity(), AddBoardActivity.class);
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude", longitude);
                         startActivity(intent);
 
                         mListener.onFragmentInteraction(MapInfo.getInstance().getMapPoint());

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import net.daum.mf.map.api.MapPoint;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, MapFragment.OnFragmentInteractionListener {
@@ -22,13 +23,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     private MapFragment mMapFragment;
 
-//    @BindView(R.id.container)
+    @BindView(R.id.container)
     ViewPager mViewPager;
 
-//    @BindView(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-//    @BindView(R.id.navigation)
+    @BindView(R.id.navigation)
     BottomNavigationView navigation;
 
     ViewPageAdapter mViewPageAdapter;
@@ -41,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         setSupportActionBar(toolbar);
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        mViewPager = (ViewPager) findViewById(R.id.container);
+//        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mViewPageAdapter);
@@ -102,6 +103,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     public void onFragmentInteraction(MapPoint point) {
         mViewPager.setCurrentItem(1);
-        BoardFragment.newInstance(point, null);
+//        BoardFragment.newInstance(point, null);
     }
 }

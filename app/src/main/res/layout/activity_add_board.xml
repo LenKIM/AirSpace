@@ -62,7 +62,4 @@
                 android:text="@android:string/cancel"
                 />
     </LinearLayout>
-
-
-
 </LinearLayout>

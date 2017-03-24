@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,21 @@ import net.daum.mf.map.api.MapPoint;
 
 import java.util.ArrayList;
 
-public class BoardFragment extends Fragment {
+import butterknife.BindView;
+
+import static android.content.ContentValues.TAG;
+
+public class BoardFragment extends Fragment implements AddBoardActivity.onRefreshListener {
+
 
 
     public BoardFragment() {
         // Required empty public constructor
     }
+    @BindView(R.id.recyclerView)
+    RecyclerView mCardRecyclerView;
 
-    private RecyclerView mCardRecyclerView;
+
     private CardContentAdapter mAdapter;
     private ArrayList<Board> mBoards;
 
@@ -68,6 +76,14 @@ public class BoardFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onRefreshClick(Boolean isRefresh) {
+        if (isRefresh){
+            Log.d(TAG, "Do Refresh");
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private static class CardViewHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,6 @@
 package com.yyy.xxx.airspace.Model;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 import java.util.UUID;
 
@@ -13,7 +13,7 @@ public class Board {
     private UUID mUUID;
     private String name;
     private String description;
-    private Bitmap image;
+    private Drawable image;
 
     private static Board instance = new Board();
 
@@ -47,11 +47,11 @@ public class Board {
         this.description = description;
     }
 
-    public Bitmap getImage() {
+    public Drawable getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(Drawable image) {
         this.image = image;
     }
 }
