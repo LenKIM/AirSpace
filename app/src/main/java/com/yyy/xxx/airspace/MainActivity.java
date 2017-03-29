@@ -1,38 +1,47 @@
 package com.yyy.xxx.airspace;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import net.daum.mf.map.api.MapPoint;
+import com.cloudinary.Cloudinary;
+import com.yyy.xxx.airspace.Model.Board;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, MapFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        ViewPager.OnPageChangeListener,
+        MapFragment.OnFragmentInteractionListener,
+        ACTIVITY_REQUEST{
 
     private static final String TAG = MainActivity.class.getName();
 
-    private TextView mTextMessage;
-
-
-    private MapFragment mMapFragment;
-
     @BindView(R.id.container)
     ViewPager mViewPager;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
 
     ViewPageAdapter mViewPageAdapter;
+
+
+    public static Cloudinary onConfigCloudinary(){
+        Map config = new HashMap();
+        config.put("cloud_name", "defcu7txp");
+        config.put("api_key", "937956612612147");
+        config.put("api_secret", "jC6ZeVvYMCKeeVQEX2He_WAJ8A8");
+        Cloudinary cloudinary = new Cloudinary(config);
+        return cloudinary;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +49,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-
-//        mViewPager = (ViewPager) findViewById(R.id.container);
-//        navigation = (BottomNavigationView) findViewById(R.id.navigation);
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mViewPageAdapter);
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     private MenuItem prevBottomNavigation;
 
+
     @Override
     public void onPageSelected(int position) {
         if (prevBottomNavigation != null){
@@ -101,8 +106,26 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     @Override
-    public void onFragmentInteraction(MapPoint point) {
+    public void onFragmentInteraction(String point) {
+        if (point != null){
+            Board.getInstance().setMapPoint(point.toString());
+            Log.d(TAG, "MapPoint 입력완료");
+        }
         mViewPager.setCurrentItem(1);
-//        BoardFragment.newInstance(point, null);
     }
-}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+
+            case RESULT_OK :
+                {
+                Log.d(TAG, "RESULT_OK");
+                mViewPageAdapter.notifyDataSetChanged();
+                break;
+                }
+//            case DEFAULT :
+            }
+        }
+    }

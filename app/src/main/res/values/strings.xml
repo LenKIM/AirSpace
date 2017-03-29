@@ -9,4 +9,5 @@
     <string name="map_confirm_review">해당 장소에 대한 기록을 남기시겠습니까?</string>
     <string name="map_review_title">흔적 남기기</string>
     <string name="confirm">확인</string>
+    <string name="confirm_map_where">흔적을 남기고 싶다면 맵에서 해당 지역을 클릭해주세요</string>
 </resources>

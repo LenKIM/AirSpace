@@ -28,6 +28,7 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
     public BoardFragment() {
         // Required empty public constructor
     }
+
     @BindView(R.id.recyclerView)
     RecyclerView mCardRecyclerView;
 
@@ -52,6 +53,8 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         mBoards = new ArrayList<>();
 
+
+
         }
 
 
@@ -62,7 +65,6 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         mCardRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
 
         mAdapter = new CardContentAdapter(getActivity(), mBoards);
         mCardRecyclerView.setAdapter(mAdapter);
@@ -127,7 +129,7 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
 
         @Override
         public int getItemCount() {
-            return 0;
+            return mBoards.size();
         }
     }
 }

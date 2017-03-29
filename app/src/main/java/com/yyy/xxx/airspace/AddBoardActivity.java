@@ -35,14 +35,11 @@ import butterknife.OnClick;
  *
  */
 
-public class AddBoardActivity extends AppCompatActivity {
+public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQUEST{
 
     private static final String TAG = AddBoardActivity.class.getName();
 
-    private static final int PICK_FROM_CAMERA = 1;
-    private static final int PICK_FROM_ALBUM = 2;
-    private static final int CROP_FROM_iMAGE = 3;
-    private static final int READ_REQEST_CODE = 4;
+
 
     @BindView(R.id.edit_name)
     EditText name_Edit;
@@ -70,13 +67,14 @@ public class AddBoardActivity extends AppCompatActivity {
         Board.getInstance().setName(name_Edit.getText().toString());
         Board.getInstance().setDescription(desc_Edit.getText().toString());
         if (!(mImageView.getDrawable() == null)) {
-            Board.getInstance().setImage(mImageView.getDrawable());
+
+//            onConfigCloudinary().url().generate()
+//          Cloudinary에 올리고 UUID로 판별하기 그리고 그걸로 가져오기
+//            Board.getInstance().setImage(mImageView.getDrawable());
         }
 
-         getFragmentManager().findFragmentById(R.id.container);
-
+        setResult(RESULT_OK);
         finish();
-
     }
 
     @OnClick(R.id.imageView) void onImageOnClick(){

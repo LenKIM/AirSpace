@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yyy.xxx.airspace.Model.MapInfo;
+import com.yyy.xxx.airspace.Model.Board;
 import com.yyy.xxx.airspace.search.Item;
 import com.yyy.xxx.airspace.search.OnFinishSearchListener;
 import com.yyy.xxx.airspace.search.Searcher;
@@ -42,7 +42,7 @@ import java.util.List;
 import butterknife.BindView;
 
 
-public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener{
+public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST{
 
     private static final String ARG_PARAM1 = null;
     private static final String ARG_PARAM2 = null;
@@ -91,7 +91,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     private OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(MapPoint point);
+        void onFragmentInteraction(String point);
     }
 
     public MapFragment() {
@@ -209,11 +209,9 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             }
         }
 
-    public void onButtonPressed(MapPoint point) {
+    public void onButtonPressed(String point) {
         if (mListener != null) {
-
             mListener.onFragmentInteraction(point);
-
         }
     }
 
@@ -275,7 +273,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         showAll(mapPoint);
 
-        MapInfo.getInstance().setMapPoint(mapPoint);
+        Board.getInstance().setMapPoint(mapPoint.toString());
         Log.d(TAG, "맵포인트 입력완료" + mapPoint.getMapPointGeoCoord().longitude +"/"+mapPoint.getMapPointGeoCoord().latitude);
 //        mTapTextView.setText("long pressed, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
 //        Log.i(TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
@@ -356,6 +354,11 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
         //TODO 해당 좌표를 대쉬보드로 넘기고 여기에서 했던 일들을 기록.
         // 꼬리꼬리 꼬리에 해당하는 것임.!
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -365,17 +368,15 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        double latitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().latitude;
-                        double longitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().longitude;
+//                        double latitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().latitude;
+//                        double longitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().longitude;
                         //지도에서 ADD하는 부분으로 넘기기
 //                        MapFragment.newInstance(latitude, longitude);
-                        Intent intent = new Intent(getActivity(), AddBoardActivity.class);
-                        intent.putExtra("latitude", latitude);
-                        intent.putExtra("longitude", longitude);
-                        startActivity(intent);
-
-                        mListener.onFragmentInteraction(MapInfo.getInstance().getMapPoint());
-
+                        Intent confirmIntent = new Intent(getActivity(), AddBoardActivity.class);
+//                        confirmIntent.putExtra("latitude", latitude);
+//                        confirmIntent.putExtra("longitude", longitude);
+                        startActivityForResult(confirmIntent, CONFIRM_REQUEST);
+                        mListener.onFragmentInteraction(Board.getInstance().getMapPoint());
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -387,11 +388,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-
     }
 
     @Override

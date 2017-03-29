@@ -1,19 +1,14 @@
 package com.yyy.xxx.airspace.Model;
 
-import android.graphics.drawable.Drawable;
-
-import java.util.UUID;
-
 /**
  * Created by len on 2017. 3. 22..
  */
 
 public class Board {
 
-    private UUID mUUID;
+    private String mMapPoint;
     private String name;
     private String description;
-    private Drawable image;
 
     private static Board instance = new Board();
 
@@ -24,12 +19,17 @@ public class Board {
     public Board() {
         name = null;
         description = null;
-        image = null;
+        mMapPoint = null;
     }
 
-    public UUID getUUID() {
-        return mUUID;
+    public String getMapPoint() {
+        return mMapPoint;
     }
+
+    public void setMapPoint(String mapPoint) {
+        mMapPoint = mapPoint;
+    }
+
 
     public String getName() {
         return name;
@@ -47,12 +47,5 @@ public class Board {
         this.description = description;
     }
 
-    public Drawable getImage() {
-        return image;
-    }
-
-    public void setImage(Drawable image) {
-        this.image = image;
-    }
 }
 
