@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yyy.xxx.airspace.Model.Board;
 import com.yyy.xxx.airspace.search.Item;
 import com.yyy.xxx.airspace.search.OnFinishSearchListener;
 import com.yyy.xxx.airspace.search.Searcher;
@@ -52,6 +51,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     private String mParam1;
     private String mParam2;
+    protected MapPoint mMapPoint;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
 
@@ -218,23 +218,16 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
     }
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
-        // MapView had loaded. Now, MapView APIs could be called safely.
         Log.i(TAG, "onMapViewInitialized");
     }
 
@@ -273,7 +266,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         showAll(mapPoint);
 
-        Board.getInstance().setMapPoint(mapPoint.toString());
+        mMapPoint = mapPoint;
         Log.d(TAG, "맵포인트 입력완료" + mapPoint.getMapPointGeoCoord().longitude +"/"+mapPoint.getMapPointGeoCoord().latitude);
 //        mTapTextView.setText("long pressed, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
 //        Log.i(TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
@@ -358,8 +351,9 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     }
 
     @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+    public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem mapPOIItem) {
         //TODO 해당 좌표를 대쉬보드로 넘기고 여기에서 했던 일들을 기록.
+        Log.d(TAG, "말머리표 버튼을 눌렀습니다");
         // 꼬리꼬리 꼬리에 해당하는 것임.!
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.map_review_title)
@@ -368,21 +362,20 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        double latitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().latitude;
-//                        double longitude = MapInfo.getInstance().getMapPoint().getMapPointGeoCoord().longitude;
-                        //지도에서 ADD하는 부분으로 넘기기
-//                        MapFragment.newInstance(latitude, longitude);
                         Intent confirmIntent = new Intent(getActivity(), AddBoardActivity.class);
-//                        confirmIntent.putExtra("latitude", latitude);
-//                        confirmIntent.putExtra("longitude", longitude);
+                        String latitude = mMapPoint.getMapPointGeoCoord().latitude + "";
+                        String longitude = mMapPoint.getMapPointGeoCoord().longitude + "";
+                        confirmIntent.putExtra("latitude", latitude);
+                        confirmIntent.putExtra("longitude", longitude);
                         startActivityForResult(confirmIntent, CONFIRM_REQUEST);
-                        mListener.onFragmentInteraction(Board.getInstance().getMapPoint());
+                        Log.d(TAG, "확인 버튼 누름");
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        Log.d(TAG, "취소 버튼 누름");
                     }
                 });
 

@@ -3,25 +3,21 @@ package com.yyy.xxx.airspace;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yyy.xxx.airspace.Model.Board;
+import com.yyy.xxx.airspace.Model.BoardLab;
 
 import net.daum.mf.map.api.MapPoint;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import butterknife.BindView;
-
-import static android.content.ContentValues.TAG;
-
-public class BoardFragment extends Fragment implements AddBoardActivity.onRefreshListener {
+public class BoardFragment extends Fragment {
 
 
 
@@ -29,12 +25,11 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
         // Required empty public constructor
     }
 
-    @BindView(R.id.recyclerView)
-    RecyclerView mCardRecyclerView;
 
-
+    private RecyclerView mCardRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private CardContentAdapter mAdapter;
-    private ArrayList<Board> mBoards;
+    private List<Board> mBoards;
 
     public static BoardFragment newInstance(MapPoint param1, String param2) {
         BoardFragment fragment = new BoardFragment();
@@ -51,8 +46,8 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
-        mBoards = new ArrayList<>();
 
+        mBoards = BoardLab.getBoardLab(getContext()).getBoards();
 
 
         }
@@ -64,10 +59,15 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
 
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        mCardRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mCardRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
 
-        mAdapter = new CardContentAdapter(getActivity(), mBoards);
+
+        mAdapter = new CardContentAdapter(mBoards);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        mCardRecyclerView.setLayoutManager(linearLayoutManager);
+
         mCardRecyclerView.setAdapter(mAdapter);
+
         return view;
     }
     @Override
@@ -80,37 +80,44 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
         super.onDetach();
     }
 
-    @Override
-    public void onRefreshClick(Boolean isRefresh) {
-        if (isRefresh){
-            Log.d(TAG, "Do Refresh");
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
-    private static class CardViewHolder extends RecyclerView.ViewHolder {
+    private static class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ImageView card_imageView;
-        public TextView name;
-        public TextView desciption;
+//        public ImageView mCard_imageView;
+        private TextView mTitle;
+        private TextView mDescription;
+        private TextView mDate;
+        private Board mBoard;
 
         public CardViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_board_fragment, parent, false));
+            //TODO 이미지 클라우드 활용하기.
+//            mCard_imageView = (ImageView) itemView.findViewById(R.id.card_Imageview);
+            mTitle = (TextView) itemView.findViewById(R.id.card_name);
+            mDescription = (TextView) itemView.findViewById(R.id.card_text);
+            mDate = (TextView) itemView.findViewById(R.id.card_date);
+        }
 
-            card_imageView = (ImageView) itemView.findViewById(R.id.card_Imageview);
-            name = (TextView) itemView.findViewById(R.id.card_name);
-            desciption = (TextView) itemView.findViewById(R.id.card_text);
+        public void bindBoard(Board board){
+            mBoard = board;
+            //여전히 사진은 Later
+            mTitle.setText(mBoard.getTitle());
+            mDescription.setText(mBoard.getDescription());
+            mDate.setText(mBoard.getDate());
+        }
+
+        @Override
+        public void onClick(View v) {
+            //만약 내가 해당 리스트 아이템을 클릭했을 경우 발생하는 이벤트를 넣는 곳
 
         }
     }
     private class CardContentAdapter extends RecyclerView.Adapter<CardViewHolder> {
 
-        private Context mContext;
-        private ArrayList<Board> mBoards;
+        private List<Board> mBoards;
 
-        public CardContentAdapter(Context context, ArrayList<Board> boards) {
-            mContext = context;
-            mBoards = boards;
+        public CardContentAdapter(List<Board> boards) {
+            this.mBoards = boards;
         }
 
         @Override
@@ -123,13 +130,16 @@ public class BoardFragment extends Fragment implements AddBoardActivity.onRefres
 
             Board board = mBoards.get(position);
 //            holder.card_imageView.setImageDrawable(); //TODO 그림넣는 부분 해결해야함.
-            holder.name.setText(board.getName());
-            holder.desciption.setText(board.getDescription());
+            holder.bindBoard(board);
         }
 
         @Override
         public int getItemCount() {
             return mBoards.size();
+        }
+
+        public void setBoards(List<Board> boards){
+            mBoards = boards;
         }
     }
 }

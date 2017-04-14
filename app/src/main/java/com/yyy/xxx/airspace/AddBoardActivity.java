@@ -11,19 +11,25 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.yyy.xxx.airspace.Model.Board;
+import com.yyy.xxx.airspace.Model.BoardLab;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,10 +41,10 @@ import butterknife.OnClick;
  *
  */
 
-public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQUEST{
+public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQUEST, DatePickerFragment.OnDateListener{
 
     private static final String TAG = AddBoardActivity.class.getName();
-
+    private static final String DIALOG_DATE = "DialogDate";
 
 
     @BindView(R.id.edit_name)
@@ -50,30 +56,63 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
     @BindView(R.id.imageView)
     ImageView mImageView;
 
+    @BindView(R.id.date_space)
+    TextView mTextView;
+
     Uri mUri;
 
-    interface onRefreshListener{
-        void onRefreshClick(Boolean isRefresh);
+    @Override
+    public void onReceivedDate(Date date) {
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+//
+//        String stringDate = simpleDateFormat.format(date);
+
+        mTextView.setText(Board.getInstance().getDate());
     }
 
     private String absoultePath;
-    onRefreshListener mOnRefrshListener;
 
     @OnClick(R.id.btn_add_cancel) void onCancelClick(){
         finish();
     }
 
+    @OnClick(R.id.btn_select_date) void onClickSelectButton(){
+        FragmentManager manager = getSupportFragmentManager();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(Board.getInstance().getDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DatePickerFragment dialog = DatePickerFragment.newInstance(date);
+        dialog.show(manager, DIALOG_DATE);
+    }
+
     @OnClick(R.id.btn_add_confirm) void onConfirmClick(){
-        Board.getInstance().setName(name_Edit.getText().toString());
+        //UUID는 자동으로 생성되므로 여기서 따로 추가해줄필요가 없다.
+        Log.d(TAG, "새롭게 생긴 UUID는 " + Board.getInstance().getUUID() + "");
+        Board.getInstance().setTitle(name_Edit.getText().toString());
         Board.getInstance().setDescription(desc_Edit.getText().toString());
-        if (!(mImageView.getDrawable() == null)) {
+
+        Intent getIntent = getIntent();
+        String latitude = getIntent.getStringExtra("latitude");
+        String longitude = getIntent.getStringExtra("longitude");
+
+        Board.getInstance().setMapPoint(latitude+ "/" + longitude);
+
+        //BoardLab의 인스턴트를 만들어 저장하는 부분!
+        BoardLab.getBoardLab(getApplicationContext()).insertBoard(Board.getInstance());
+
+//        if (!(mImageView.getDrawable() == null)) {
 
 //            onConfigCloudinary().url().generate()
 //          Cloudinary에 올리고 UUID로 판별하기 그리고 그걸로 가져오기
 //            Board.getInstance().setImage(mImageView.getDrawable());
-        }
+//        }
 
-        setResult(RESULT_OK);
+        setResult(RESULT_OK_INPUT_BOARD);
         finish();
     }
 
@@ -139,9 +178,9 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != RESULT_OK)
-            return;
-
+        if (resultCode == RESULT_OK){
+            mTextView.setText(Board.getInstance().getDate());
+        }
 
         switch (requestCode){
             case PICK_FROM_ALBUM: {
@@ -199,6 +238,13 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
                     f.delete();
                 }
             }
+            //날짜 데이터를 요청해서 받은 정보를 담는 공간
+            case REQUEST_DATE :
+            {
+                Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                Board.getInstance().setDate(date);
+                mTextView.setText(Board.getInstance().getDate());
+            }
         }
     }
 
@@ -241,9 +287,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_board);
+        setContentView(R.layout.activity_addboard);
         ButterKnife.bind(this);
-
     }
-
 }

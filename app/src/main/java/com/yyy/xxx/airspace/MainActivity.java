@@ -6,11 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.cloudinary.Cloudinary;
-import com.yyy.xxx.airspace.Model.Board;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
         ViewPager.OnPageChangeListener,
-        MapFragment.OnFragmentInteractionListener,
         ACTIVITY_REQUEST{
 
     private static final String TAG = MainActivity.class.getName();
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private MenuItem prevBottomNavigation;
 
-
     @Override
     public void onPageSelected(int position) {
         if (prevBottomNavigation != null){
@@ -106,26 +102,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(String point) {
-        if (point != null){
-            Board.getInstance().setMapPoint(point.toString());
-            Log.d(TAG, "MapPoint 입력완료");
-        }
-        mViewPager.setCurrentItem(1);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode){
 
-            case RESULT_OK :
-                {
-                Log.d(TAG, "RESULT_OK");
-                mViewPageAdapter.notifyDataSetChanged();
-                break;
-                }
-//            case DEFAULT :
             }
         }
     }

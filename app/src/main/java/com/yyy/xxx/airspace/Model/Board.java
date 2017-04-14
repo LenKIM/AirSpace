@@ -1,14 +1,20 @@
 package com.yyy.xxx.airspace.Model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Created by len on 2017. 3. 22..
  */
 
 public class Board {
 
+    private UUID mUUID;
     private String mMapPoint;
-    private String name;
-    private String description;
+    private String mDescription;
+    private String mTitle;
+    private Date mDate;
 
     private static Board instance = new Board();
 
@@ -17,9 +23,22 @@ public class Board {
     }
 
     public Board() {
-        name = null;
-        description = null;
+    this(UUID.randomUUID());
+    }
+
+    public Board(UUID id) {
+        mUUID = id;
+        mTitle = null;
+        mDescription = null;
         mMapPoint = null;
+        mDate = new Date();
+    }
+
+    public UUID getUUID() {
+        return mUUID;
+    }
+    public void setUUID(UUID UUID) {
+        mUUID = UUID;
     }
 
     public String getMapPoint() {
@@ -30,21 +49,31 @@ public class Board {
         mMapPoint = mapPoint;
     }
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
-        return description;
+        return mDescription;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        mDescription = description;
+    }
+
+    public String getDate() {
+        //  Date로 들어온 데이터를 String으로 변환시켜줌
+        SimpleDateFormat stringToDate = new SimpleDateFormat("yyyy-MM-dd");
+        String StringDate = stringToDate.format(mDate);
+        return StringDate;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
 }

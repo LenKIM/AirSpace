@@ -31,7 +31,16 @@
                 tools:text="테스트Test"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@color/white"/>
-
+        <TextView
+                android:id="@+id/card_date"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_above="@id/card_name"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/md_keylines"
+                tools:text="날짜 부분"
+                />
         <TextView
                 android:id="@+id/card_text"
                 android:layout_width="match_parent"
