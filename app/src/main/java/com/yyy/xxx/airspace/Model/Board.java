@@ -16,12 +16,6 @@ public class Board {
     private String mTitle;
     private Date mDate;
 
-    private static Board instance = new Board();
-
-    public static Board getInstance(){
-        return instance;
-    }
-
     public Board() {
     this(UUID.randomUUID());
     }
@@ -36,9 +30,6 @@ public class Board {
 
     public UUID getUUID() {
         return mUUID;
-    }
-    public void setUUID(UUID UUID) {
-        mUUID = UUID;
     }
 
     public String getMapPoint() {

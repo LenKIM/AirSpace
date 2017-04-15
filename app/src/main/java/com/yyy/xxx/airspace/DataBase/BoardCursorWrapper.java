@@ -29,6 +29,7 @@ public class BoardCursorWrapper extends CursorWrapper {
     }
 
     public Board getBoard() throws ParseException {
+
         String uuidString = getString(getColumnIndex(BoardTable.Cols.UUID));
         String titleString = getString(getColumnIndex(BoardTable.Cols.TITLE));
         String dateString = getString(getColumnIndex(BoardTable.Cols.DATE));
@@ -36,11 +37,12 @@ public class BoardCursorWrapper extends CursorWrapper {
         String mapPointString = getString(getColumnIndex(BoardTable.Cols.MAPPOINT));
 
         Board board = new Board(UUID.fromString(uuidString));
-        board.setTitle(titleString);
+
 
         SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date toTransDate = transFormat.parse(dateString);
 
+        Date toTransDate = transFormat.parse(dateString);
+        board.setTitle(titleString);
         board.setDescription(contentString);
         board.setMapPoint(mapPointString);
 
@@ -61,16 +63,5 @@ public class BoardCursorWrapper extends CursorWrapper {
 
      String to = transFormat.format(from);
 
-     */
-
-    /**
-     *
-     * public static final String UUID = "uuid";
-     public static final String TITLE = "title";
-     public static final String DATA = "data";
-     public static final String CONTENT = "content";
-     public static final String MAPPOINT = "mapPoint";
-
-     }
      */
 }

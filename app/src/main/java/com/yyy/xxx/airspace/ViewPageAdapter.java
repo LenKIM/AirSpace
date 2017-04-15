@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 /**
  * Created by len on 2017. 3. 13..
+ * ViewPagerAdapter
  */
 
 public class ViewPageAdapter extends FragmentPagerAdapter {
@@ -14,17 +15,16 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-
     @Override
     public Fragment getItem(int position) {
         // Returning the current tabs
         switch (position) {
             case 0:
-               return MapFragment.newInstance(null,null);
-            case 1:
-                return BoardFragment.newInstance(null,null);
-            case 2:
                 return NotiFragment.newInstance(null,null);
+            case 1:
+                return MapFragment.newInstance(null,null);
+            case 2:
+                return BoardFragment.newInstance(null,null);
             default:
                 return null;
         }

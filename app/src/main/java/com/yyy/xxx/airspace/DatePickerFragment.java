@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.yyy.xxx.airspace.Model.Board;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -81,9 +79,7 @@ public class DatePickerFragment extends DialogFragment implements ACTIVITY_REQUE
                         int month = mDatePicker.getMonth();
                         int day = mDatePicker.getDayOfMonth();
                         Date date = new GregorianCalendar(year, month, day).getTime();
-                        Board.getInstance().setDate(date);
                         mOnDateListener.onReceivedDate(date);
-
                     }
                 })
                 .create();

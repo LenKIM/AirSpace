@@ -38,7 +38,6 @@ public class BoardLab {
         mContext = context;
         mDatabase = new BoardDataBaseHelper(mContext).getWritableDatabase();
         Log.d(TAG, "BoardLab 생성자 생성완료");
-
     }
 
     public void insertBoard(Board board) {
@@ -48,14 +47,14 @@ public class BoardLab {
     }
 
     public void updateBoard(Board board) {
-        String uuidString = Board.getInstance().getUUID().toString();
+        String uuidString = board.getUUID().toString();
         ContentValues values = getContentValues(board);
 
         mDatabase.update(BoardTable.NAME, values, Cols.UUID + " = ?", new String[]{uuidString});
     }
 
     public void deleteBoard(Board board) {
-        String uuidString = Board.getInstance().getUUID().toString();
+        String uuidString = board.getUUID().toString();
         ContentValues values = getContentValues(board);
 
         mDatabase.delete(BoardTable.NAME,
@@ -77,19 +76,19 @@ public class BoardLab {
     /**
      * 모든 게시판 글들을 가져오자!
      */
-    public List<Board> getBoards() {
+    public List<Board> getBoards()  {
         List<Board> boards = new ArrayList<>();
 
         BoardCursorWrapper cursor = queryCrimes(null, null);
         try {
             cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
+            while (!cursor.isLast()) {
                 boards.add(cursor.getBoard());
-                cursor.moveToFirst();
+                cursor.moveToNext();
+                Log.d(TAG, cursor.getBoard().getUUID() + "");
             }
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.d(TAG, "ParseException 발생");
         } finally {
             cursor.close();
         }

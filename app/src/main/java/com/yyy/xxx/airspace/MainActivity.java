@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.cloudinary.Cloudinary;
@@ -30,7 +31,10 @@ public class MainActivity extends AppCompatActivity implements
 
     ViewPageAdapter mViewPageAdapter;
 
-
+    /**
+     * 클라우너리 Config 함수
+     * @return
+     */
     public static Cloudinary onConfigCloudinary(){
         Map config = new HashMap();
         config.put("cloud_name", "defcu7txp");
@@ -47,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mViewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
-
         mViewPager.setAdapter(mViewPageAdapter);
         mViewPager.addOnPageChangeListener(this);
         mViewPager.setCurrentItem(0);
@@ -60,12 +63,15 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         mViewPager.setCurrentItem(0);
+                        Log.d(TAG, "Page 0 selected");
                         return true;
                     case R.id.navigation_dashboard:
                         mViewPager.setCurrentItem(1);
+                        Log.d(TAG, "Page 1 selected");
                         return true;
                     case R.id.navigation_notifications:
                         mViewPager.setCurrentItem(2);
+                        Log.d(TAG, "Page 2 selected");
                         return true;
                 }
                 return false;
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        Log.d(TAG, "running on PageScroll");
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.yyy.xxx.airspace;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,10 +14,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yyy.xxx.airspace.Model.Board;
+import com.yyy.xxx.airspace.Model.BoardLab;
 import com.yyy.xxx.airspace.search.Item;
 import com.yyy.xxx.airspace.search.OnFinishSearchListener;
 import com.yyy.xxx.airspace.search.Searcher;
@@ -40,6 +39,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.yyy.xxx.airspace.Model.BoardLab.getBoardLab;
+
 
 public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST{
 
@@ -58,35 +59,14 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @BindView(R.id.map_view)
     MapView mapView;
 
+    //Daum지도 검색.
     @BindView(R.id.button_search_place)
     EditText edit_Search;
 
     private Button btn_Search;
     private MapPOIItem mDefaultMarker;
     private MapPOIItem mCustomMarker;
-    private MapPOIItem mCustomBmMarker;
 
-
-    // CalloutBalloonAdapter 인터페이스 구현
-    class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
-        private final View mCalloutBalloon;
-
-        public CustomCalloutBalloonAdapter() {
-            mCalloutBalloon = View.inflate(getActivity(), R.layout.custom_callout_balloon, null);
-        }
-
-        @Override
-        public View getCalloutBalloon(MapPOIItem poiItem) {
-            ((ImageView) mCalloutBalloon.findViewById(R.id.badge)).setImageResource(R.drawable.ic_launcher);
-            ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
-            return mCalloutBalloon;
-        }
-
-        @Override
-        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
-            return null;
-        }
-    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -98,6 +78,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     }
 
+
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
@@ -105,6 +86,27 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    // CalloutBalloonAdapter 인터페이스 구현
+    class MyCustomBalloonAdapter implements CalloutBalloonAdapter {
+        private final View mCalloutBalloon;
+
+        public MyCustomBalloonAdapter() {
+            mCalloutBalloon = View.inflate(getActivity(), R.layout.custom_callout_balloon, null);
+        }
+
+        @Override
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+            ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
+            return mCalloutBalloon;
+        }
+
+        @Override
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            return null;
+        }
     }
 
     @Override
@@ -129,7 +131,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mapView.setDaumMapApiKey(API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter2());
+//        mapView.setCalloutBalloonAdapter(new MyCustomBalloonAdapter2());
 
 
         btn_Search.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +156,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                 searcher.searchKeyword( getContext(), query, latitude, longitude, radius, page, apikey, new OnFinishSearchListener() {
                     @Override
                     public void onSuccess(List<Item> itemList) {
+
                         mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
                         showResult(itemList); // 검색 결과 보여줌
                     }
@@ -178,6 +181,10 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         });
     }
 
+    /**
+     * 지도에서 검색했을 때 나오는 부분들을 마커로 찍는 함수
+     * @param itemList
+     */
     private void showResult(List<Item> itemList) {
             MapPointBounds mapPointBounds = new MapPointBounds();
 
@@ -229,6 +236,65 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @Override
     public void onMapViewInitialized(MapView mapView) {
         Log.i(TAG, "onMapViewInitialized");
+
+
+        MyCustomBalloonAdapter customBallon = new MyCustomBalloonAdapter();
+        //이전에 방문했던 지역을 지도에 표시.
+        mapView.setCalloutBalloonAdapter(customBallon);
+
+        getAllMapPoints(mapView);
+
+        getBoardLab(getContext()).getBoards();
+
+
+    }
+
+    private void getAllMapPoints(MapView mapView) {
+
+        String tempMapPoint;
+        String[] mapPoint;
+        String title;
+        String desc;
+
+        Log.d(TAG, "Get All stored MapPoints");
+        List<Board> boards = BoardLab.getBoardLab(getActivity()).getBoards();
+
+        for (Board singleBoard: boards) {
+            tempMapPoint = singleBoard.getMapPoint();
+            mapPoint = tempMapPoint.split("/");
+            title = singleBoard.getTitle();
+//            desc = singleBoard.getDescription();
+
+            AllForMarker(mapView, mapPoint, title);
+        }
+    }
+
+    /**
+     * 지도에 마커를 꼭 찍는 함수.
+     * @param mapView
+     * @param points
+     * @param title
+     */
+    private void AllForMarker(MapView mapView, String[] points, String title) {
+        mCustomMarker = new MapPOIItem();
+        mCustomMarker.setItemName(title);
+        mCustomMarker.setTag(1);
+
+        double latitude = Double.parseDouble(points[0]);
+        double longtitude = Double.parseDouble(points[1]);
+
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longtitude);
+        mCustomMarker.setMapPoint(mapPoint);
+
+        mCustomMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+
+        mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
+        mCustomMarker.setCustomImageAutoscale(false);
+        mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
+
+        mapView.addPOIItem(mCustomMarker);
+        mapView.selectPOIItem(mCustomMarker, true);
+        mapView.setMapCenterPoint(mapPoint, false);
     }
 
     @Override
@@ -253,15 +319,10 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
-        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
 
-        Double latitude = mapPointGeo.latitude;
-        Double longitude = mapPointGeo.longitude;
-
-        MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
         mapView.removeAllPOIItems();
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
-        createDefaultMarker(mapView, mapPoint);
+        mapView.setCalloutBalloonAdapter(new MyCustomBalloonAdapter());
+//        createDefaultMarker(mapView, mapPoint);
         createCustomMarker(mapView, mapPoint);
 
         showAll(mapPoint);
@@ -272,6 +333,12 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 //        Log.i(TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
     }
 
+    /**
+     *  필요 따라 선택해서 만들자
+     *  아래 마커는 가장 기본적인 마커
+     * @param mapView
+     * @param point
+     */
     private void createDefaultMarker(MapView mapView, MapPoint point) {
         mDefaultMarker = new MapPOIItem();
         String name = "Default Marker";
@@ -304,23 +371,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mapView.setMapCenterPoint(point, false);
     }
 
-    private void createCustomBitmapMarker(MapView mapView, MapPoint point) {
-        mCustomBmMarker = new MapPOIItem();
-        String name = "Custom Bitmap Marker";
-        mCustomBmMarker.setItemName(name);
-        mCustomBmMarker.setTag(2);
-        mCustomBmMarker.setMapPoint(point);
-
-        mCustomBmMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.custom_marker_star);
-        mCustomBmMarker.setCustomImageBitmap(bm);
-        mCustomBmMarker.setCustomImageAutoscale(false);
-        mCustomBmMarker.setCustomImageAnchor(0.5f, 0.5f);
-
-        mapView.addPOIItem(mCustomBmMarker);
-        mapView.selectPOIItem(mCustomBmMarker, true);
-        mapView.setMapCenterPoint(point, false);
-    }
 
     private void showAll(MapPoint point) {
         int padding = 20;
@@ -365,6 +415,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                         Intent confirmIntent = new Intent(getActivity(), AddBoardActivity.class);
                         String latitude = mMapPoint.getMapPointGeoCoord().latitude + "";
                         String longitude = mMapPoint.getMapPointGeoCoord().longitude + "";
+                        //이렇게 넘기는 저장하기 위해서...
                         confirmIntent.putExtra("latitude", latitude);
                         confirmIntent.putExtra("longitude", longitude);
                         startActivityForResult(confirmIntent, CONFIRM_REQUEST);
@@ -385,44 +436,16 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-
+        Log.d(TAG, "onCalloutBalloonOfPOIItemTouched");
     }
 
     @Override
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
-
+        Log.d(TAG, "onDraggablePOIItemMoved");
     }
 
 
 
-    class CustomCalloutBalloonAdapter2 implements CalloutBalloonAdapter {
-
-        private final View mCalloutBalloon;
-
-        public CustomCalloutBalloonAdapter2() {
-            mCalloutBalloon = View.inflate(getContext(),R.layout.custom_callout_balloon,null);
-        }
-
-        @Override
-        public View getCalloutBalloon(MapPOIItem poiItem) {
-            if (poiItem == null) return null;
-            Item item = mTagItemMap.get(poiItem.getTag());
-            if (item == null) return null;
-            ImageView imageViewBadge = (ImageView) mCalloutBalloon.findViewById(R.id.badge);
-            TextView textViewTitle = (TextView) mCalloutBalloon.findViewById(R.id.title);
-            textViewTitle.setText(item.title);
-            TextView textViewDesc = (TextView) mCalloutBalloon.findViewById(R.id.desc);
-            textViewDesc.setText(item.address);
-            imageViewBadge.setImageDrawable(createDrawableFromUrl(item.imageUrl));
-            return mCalloutBalloon;
-        }
-
-        @Override
-        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
-            return null;
-        }
-
-    }
 
     private void hideSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

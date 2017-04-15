@@ -2,6 +2,7 @@ package com.yyy.xxx.airspace;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +19,6 @@ import net.daum.mf.map.api.MapPoint;
 import java.util.List;
 
 public class BoardFragment extends Fragment {
-
-
 
     public BoardFragment() {
         // Required empty public constructor
@@ -47,11 +46,9 @@ public class BoardFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 
-        mBoards = BoardLab.getBoardLab(getContext()).getBoards();
+        mBoards = BoardLab.getBoardLab(getActivity()).getBoards();
 
-
-        }
-
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +67,12 @@ public class BoardFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

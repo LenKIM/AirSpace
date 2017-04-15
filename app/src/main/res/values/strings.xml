@@ -10,4 +10,10 @@
     <string name="map_review_title">흔적 남기기</string>
     <string name="confirm">확인</string>
     <string name="confirm_map_where">흔적을 남기고 싶다면 맵에서 해당 지역을 클릭해주세요</string>
+    <string name="search_edittext">찾고자하는 지역을 입력해주세요.</string>
+    <string name="Search">검색</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="update">변경</string>
+    <string name="detail">자세히..</string>
 </resources>
