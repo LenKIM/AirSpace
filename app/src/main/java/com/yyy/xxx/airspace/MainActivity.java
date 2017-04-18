@@ -63,16 +63,19 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         mViewPager.setCurrentItem(0);
+                        mViewPager.invalidate();
                         Log.d(TAG, "Page 0 selected");
                         return true;
                     case R.id.navigation_dashboard:
                         mViewPager.setCurrentItem(1);
+                        mViewPager.invalidate();
                         Log.d(TAG, "Page 1 selected");
                         return true;
-                    case R.id.navigation_notifications:
-                        mViewPager.setCurrentItem(2);
-                        Log.d(TAG, "Page 2 selected");
-                        return true;
+//                    case R.id.navigation_notifications:
+//                        mViewPager.setCurrentItem(2);
+//                        mViewPager.invalidate();
+//                        Log.d(TAG, "Page 2 selected");
+//                        return true;
                 }
                 return false;
             }
@@ -110,8 +113,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode){
 
+        switch (resultCode){
+            case RESULT_OK_INPUT_BOARD :
+                //TODO 리프레쉬?
+                Log.d(TAG, "Refresh");
             }
         }
     }

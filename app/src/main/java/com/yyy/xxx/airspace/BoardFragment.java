@@ -14,11 +14,11 @@ import android.widget.TextView;
 import com.yyy.xxx.airspace.Model.Board;
 import com.yyy.xxx.airspace.Model.BoardLab;
 
-import net.daum.mf.map.api.MapPoint;
-
 import java.util.List;
 
 public class BoardFragment extends Fragment {
+
+    private static final String ARG_ID = "uuid";
 
     public BoardFragment() {
         // Required empty public constructor
@@ -30,11 +30,10 @@ public class BoardFragment extends Fragment {
     private CardContentAdapter mAdapter;
     private List<Board> mBoards;
 
-    public static BoardFragment newInstance(MapPoint param1, String param2) {
+    public static BoardFragment newInstance(String id) {
         BoardFragment fragment = new BoardFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1.toString());
-//        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +56,6 @@ public class BoardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         mCardRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-
 
         mAdapter = new CardContentAdapter(mBoards);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -132,8 +130,12 @@ public class BoardFragment extends Fragment {
         public void onBindViewHolder(CardViewHolder holder, int position) {
 
             Board board = mBoards.get(position);
+
+            //TODO 시간흐름에 따라 저장하는 방식으로 진행 할 것
+
 //            holder.card_imageView.setImageDrawable(); //TODO 그림넣는 부분 해결해야함.
             holder.bindBoard(board);
+
         }
 
         @Override

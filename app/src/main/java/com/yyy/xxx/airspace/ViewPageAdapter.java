@@ -20,11 +20,11 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
         // Returning the current tabs
         switch (position) {
             case 0:
-                return NotiFragment.newInstance(null,null);
+                return BoardFragment.newInstance(null);
             case 1:
                 return MapFragment.newInstance(null,null);
             case 2:
-                return BoardFragment.newInstance(null,null);
+                return NotiFragment.newInstance(null,null);
             default:
                 return null;
         }
@@ -32,7 +32,7 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Override

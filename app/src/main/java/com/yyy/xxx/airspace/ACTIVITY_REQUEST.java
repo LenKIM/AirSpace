@@ -15,4 +15,7 @@ public interface ACTIVITY_REQUEST {
     int RESULT_OK_INPUT_BOARD = 6;
     int CONFIRM_REQUEST = 100;
 
+    String DIALOG_DATE = "DialogDate";
+
+    String EXTRA_BOARD_ID = "com.yyy.xxx.airspace.board_id";
 }

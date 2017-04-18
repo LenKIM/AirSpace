@@ -2,23 +2,33 @@ package com.yyy.xxx.airspace;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.yyy.xxx.airspace.Model.Board;
+import com.yyy.xxx.airspace.Model.BoardLab;
+
+import java.text.ParseException;
+import java.util.UUID;
+
 import butterknife.BindView;
+
 
 /**
  * Created by len on 2017. 4. 15..
  */
 
-public class ConfirmPlaceFragment extends DialogFragment{
+public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST{
 
+    private static final String TAG = ConfirmPlaceFragment.class.getName();
 
     private static final String ARG_TITLE = "title";
     private static final String ARG_DESC = "description";
@@ -65,7 +75,7 @@ public class ConfirmPlaceFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
 
-        String id = (String) getArguments().getSerializable(ARG_UUID);
+        final String id = (String) getArguments().getSerializable(ARG_UUID);
         String desc = (String) getArguments().getSerializable(ARG_DESC);
         String title = (String) getArguments().getSerializable(ARG_DESC);
 
@@ -84,13 +94,16 @@ public class ConfirmPlaceFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
                 //TODO 해당 카드로 이동하기
+
             }
         });
 
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO AddBoardActivity 이동하기
+                Intent confirmIntent = AddBoardActivity.newIntent(getActivity(), UUID.fromString(id));
+                startActivity(confirmIntent);
+                Log.d(TAG, "확인 버튼 누름");
             }
         });
 
@@ -98,6 +111,19 @@ public class ConfirmPlaceFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
                 //TODO 해당 데이터베이스를 찾아 지워버리기
+                try {
+                    Board board = BoardLab.getBoardLab(getActivity()).getBoard(UUID.fromString(id));
+                    Log.d(TAG, board.getUUID() + "");
+                    BoardLab.getBoardLab(getActivity()).deleteBoard(board);
+
+                    dismiss();
+
+                    //리프레쉬해줄수 있는 방법
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -114,5 +140,9 @@ public class ConfirmPlaceFragment extends DialogFragment{
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
+    }
+
+    private void reload() {
+
     }
 }

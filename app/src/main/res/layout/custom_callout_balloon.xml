@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="99dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:ellipsize="end"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="이곳에 무슨일이 있었나요"
+                android:text="이곳에 무슨일이 있었나요?"
                 android:textColor="#ff7f7f7f"
                 android:textSize="14sp" />
         </LinearLayout>

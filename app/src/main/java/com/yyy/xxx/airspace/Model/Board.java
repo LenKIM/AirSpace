@@ -16,6 +16,12 @@ public class Board {
     private String mTitle;
     private Date mDate;
 
+    private static Board instance = new Board();
+
+    public static Board getInstance(){
+        return instance;
+    }
+
     public Board() {
     this(UUID.randomUUID());
     }
@@ -65,6 +71,12 @@ public class Board {
 
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+
+
+    public static void setInstance(Board instance) {
+        Board.instance = instance;
     }
 
 }

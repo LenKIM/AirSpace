@@ -11,6 +11,8 @@ import com.yyy.xxx.airspace.DataBase.BoardDataBaseHelper;
 import com.yyy.xxx.airspace.DataBase.BoardSchema.BoardTable;
 import com.yyy.xxx.airspace.DataBase.BoardSchema.BoardTable.Cols;
 
+import net.daum.mf.map.api.MapPoint;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class BoardLab {
 
     public void deleteBoard(Board board) {
         String uuidString = board.getUUID().toString();
-        ContentValues values = getContentValues(board);
+//        ContentValues values = getContentValues(board);
 
         mDatabase.delete(BoardTable.NAME,
                 Cols.UUID + " = ?",
@@ -96,11 +98,43 @@ public class BoardLab {
     }
 
 
+    /**
+     * UUID를 통해 해당 Board 가져오는 메소드.
+     * @param uuid
+     * @return
+     * @throws ParseException
+     */
     public Board getBoard(UUID uuid) throws ParseException {
 
         BoardCursorWrapper cursor = queryCrimes(
                 Cols.UUID + " = ?",
                 new String[]{uuid.toString()}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getBoard();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /**
+     * 맴포인트로 가져오는 메소드
+     * @param mapPoint
+     * @return
+     * @throws ParseException
+     */
+    public Board getBoard(MapPoint mapPoint) throws ParseException {
+
+        String _mapPoint = mapPoint.getMapPointGeoCoord().longitude + "/" + mapPoint.getMapPointGeoCoord().latitude;
+
+        BoardCursorWrapper cursor = queryCrimes(
+                Cols.MAPPOINT + " = ?",
+                new String[]{_mapPoint}
         );
 
         try {

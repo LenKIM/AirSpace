@@ -1,6 +1,7 @@
 package com.yyy.xxx.airspace;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,11 +44,10 @@ import butterknife.OnClick;
  */
 
 public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQUEST,
-        DatePickerFragment.OnDateListener{
+                                                        DatePickerFragment.OnDateListener{
 
     private static final String TAG = AddBoardActivity.class.getName();
-    private static final String DIALOG_DATE = "DialogDate";
-    private Board mBoard;
+
 
     @BindView(R.id.edit_name)
     EditText name_Edit;
@@ -62,17 +63,11 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
 
     Uri mUri;
 
-    public AddBoardActivity() {
-        mBoard = new Board();
-    }
 
     @Override
     public void onReceivedDate(Date date) {
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
-//
-//        String stringDate = simpleDateFormat.format(date);
-        mBoard.setDate(date);
-        mTextView.setText(mBoard.getDate());
+        Board.getInstance().setDate(date);
+        mTextView.setText(Board.getInstance().getDate());
     }
 
     private String absoultePath;
@@ -87,7 +82,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date date = null;
         try {
-            date = simpleDateFormat.parse(mBoard.getDate());
+            date = simpleDateFormat.parse(Board.getInstance().getDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -97,18 +92,18 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
 
     @OnClick(R.id.btn_add_confirm) void onConfirmClick(){
         //UUID는 자동으로 생성되므로 여기서 따로 추가해줄필요가 없다.
-        Log.d(TAG, "새롭게 생긴 UUID는 " + mBoard.getUUID() + "");
-        mBoard.setTitle(name_Edit.getText().toString());
-        mBoard.setDescription(desc_Edit.getText().toString());
+        Log.d(TAG, "새롭게 생긴 UUID는 " + Board.getInstance().getUUID() + "");
+        Board.getInstance().setTitle(name_Edit.getText().toString());
+        Board.getInstance().setDescription(desc_Edit.getText().toString());
 
         Intent getIntent = getIntent();
         String latitude = getIntent.getStringExtra("latitude");
         String longitude = getIntent.getStringExtra("longitude");
 
-        mBoard.setMapPoint(latitude+ "/" + longitude);
+        Board.getInstance().setMapPoint(latitude+ "/" + longitude);
 
         //BoardLab의 인스턴트를 만들어 저장하는 부분!
-        BoardLab.getBoardLab(getApplicationContext()).insertBoard(mBoard);
+        BoardLab.getBoardLab(getApplicationContext()).insertBoard(Board.getInstance());
 
 //        if (!(mImageView.getDrawable() == null)) {
 
@@ -184,7 +179,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            mTextView.setText(mBoard.getDate());
+            mTextView.setText(Board.getInstance().getDate());
         }
 
         switch (requestCode){
@@ -282,10 +277,37 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         }
     }
 
+    public static Intent newIntent(Context context, UUID boardid){
+        Intent intent = new Intent(context, AddBoardActivity.class);
+        intent.putExtra(EXTRA_BOARD_ID, boardid);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addboard);
         ButterKnife.bind(this);
+
+        UUID crimeId = (UUID) getIntent()
+                .getSerializableExtra(EXTRA_BOARD_ID);
+
+        Log.d(TAG, crimeId + "");
+
+        try {
+
+            //UUID의 비교는 != 으로
+            if (crimeId != null) {
+                Board board = BoardLab.getBoardLab(getApplicationContext()).getBoard(crimeId);
+                Board.getInstance().setTitle(board.getTitle());
+                Board.getInstance().setDescription(board.getDescription());
+                Board.getInstance().setMapPoint(board.getMapPoint());
+
+                name_Edit.setText(board.getTitle());
+                desc_Edit.setText(board.getDescription());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="230dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        >
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35sp"
+                android:textSize="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:text="제목"/>
+        <TextView
+                android:id="@+id/alert_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="제목이 보여지는 공간"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:textSize="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:text="내용"/>
+        <TextView
+                android:id="@+id/alert_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="어떤 이야기가 나왔는가?"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            >
+        <Button
+                android:id="@+id/btn_Dialog_MoveToDetailed"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/detail"
+                android:textStyle="bold"
+                />
+        <Button
+                android:id="@+id/btn_Dialog_Change"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/update"
+                android:textStyle="bold"
+                />
+
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            >
+        <Button
+                android:id="@+id/btn_Dialog_Delete"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/delete"
+                android:textStyle="bold"
+                />
+        <Button
+                android:id="@+id/btn_Dialog_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/cancel"
+                android:textStyle="bold"
+                />
+    </LinearLayout>
+
+</LinearLayout>
+
