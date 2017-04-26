@@ -1,6 +1,5 @@
 package com.yyy.xxx.airspace;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,17 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.cloudinary.Cloudinary;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
         ViewPager.OnPageChangeListener,
-        ACTIVITY_REQUEST{
+        ACTIVITY_REQUEST {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -35,15 +29,6 @@ public class MainActivity extends AppCompatActivity implements
      * 클라우너리 Config 함수
      * @return
      */
-    public static Cloudinary onConfigCloudinary(){
-        Map config = new HashMap();
-        config.put("cloud_name", "defcu7txp");
-        config.put("api_key", "937956612612147");
-        config.put("api_secret", "jC6ZeVvYMCKeeVQEX2He_WAJ8A8");
-        Cloudinary cloudinary = new Cloudinary(config);
-        return cloudinary;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements
     }
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Log.d(TAG, "running on PageScroll");
     }
 
     @Override
@@ -109,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onPageScrollStateChanged(int state) {
 
     }
+<<<<<<< HEAD
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -121,3 +106,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
+=======
+}
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완

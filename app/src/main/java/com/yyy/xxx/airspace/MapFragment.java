@@ -41,7 +41,11 @@ import java.util.List;
 import butterknife.BindView;
 
 
+<<<<<<< HEAD
 public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST{
+=======
+public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST {
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     private static final String ARG_PARAM1 = null;
     private static final String ARG_PARAM2 = null;
@@ -242,7 +246,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     public void onMapViewInitialized(MapView mapView) {
         Log.i(TAG, "onMapViewInitialized");
 
-
         MyCustomBalloonAdapter customBallon = new MyCustomBalloonAdapter();
         //이전에 방문했던 지역을 지도에 표시.
         mapView.setCalloutBalloonAdapter(customBallon);
@@ -278,6 +281,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mCustomMarker.setItemName(title);
         mCustomMarker.setTag(1);
 
+<<<<<<< HEAD
 
         double latitude = Double.parseDouble(points[0]);
         double longtitude = Double.parseDouble(points[1]);
@@ -288,10 +292,23 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
         mCustomMarker.setCustomImageAutoscale(false);
         mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
+=======
+        if (!points.equals(null)) {
+            double latitude = Double.parseDouble(points[0]);
+            double longtitude = Double.parseDouble(points[1]);
 
-        mapView.addPOIItem(mCustomMarker);
-        mapView.selectPOIItem(mCustomMarker, true);
-        mapView.setMapCenterPoint(mapPoint, false);
+            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longtitude);
+            mCustomMarker.setMapPoint(mapPoint);
+            mCustomMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+            mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
+            mCustomMarker.setCustomImageAutoscale(false);
+            mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
+
+            mapView.addPOIItem(mCustomMarker);
+            mapView.selectPOIItem(mCustomMarker, true);
+            mapView.setMapCenterPoint(mapPoint, false);
+        }
     }
 
     @Override
@@ -323,7 +340,11 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             createCustomMarker(mapView, mapPoint);
             showAll(mapPoint);
             mMapPoint = mapPoint;
+<<<<<<< HEAD
             Log.d(TAG, "Insert Complete MapPoint" + mapPoint.getMapPointGeoCoord().longitude + "/" + mapPoint.getMapPointGeoCoord().latitude);
+=======
+            Log.d(TAG, "Insert Complete MapPoint" + mapPoint.getMapPointGeoCoord().latitude + "/" + mapPoint.getMapPointGeoCoord().longitude);
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
 
     /**
@@ -394,14 +415,16 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem mapPOIItem) {
-        //TODO 해당 좌표를 대쉬보드로 넘기고 여기에서 했던 일들을 기록.
         Log.d(TAG, "말머리표 버튼을 눌렀습니다");
         // 꼬리꼬리 꼬리에 해당하는 것임.!
 
         String mapPoint =  mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude + "/" + mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude;
 
         if (hasBoard(mapPoint)){
+<<<<<<< HEAD
 
+=======
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
             Board board = getBoardByMapPoint(mapPoint);
             FragmentManager manager = getFragmentManager();
 //                DatePickerFragment dialog = new DatePickerFragment();
@@ -455,6 +478,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             }
         }
         return false;
+<<<<<<< HEAD
     }
 
     private Board getBoardByMapPoint(String point){
@@ -478,6 +502,29 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         Log.d(TAG, "onCalloutBalloonOfPOIItemTouched");
         mapView.refreshMapTiles();
 
+=======
+    }
+
+    private Board getBoardByMapPoint(String point){
+
+        String tempMapPoint;
+
+        List<Board> boards = BoardLab.getBoardLab(getActivity()).getBoards();
+
+        for (Board singleBoard: boards) {
+            tempMapPoint = singleBoard.getMapPoint();
+            if (tempMapPoint.equals(point)){
+                return singleBoard;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+        Log.d(TAG, "onCalloutBalloonOfPOIItemTouched11");
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
 
     @Override

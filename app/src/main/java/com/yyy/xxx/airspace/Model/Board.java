@@ -23,7 +23,7 @@ public class Board {
     }
 
     public Board() {
-    this(UUID.randomUUID());
+        this(UUID.randomUUID());
     }
 
     public Board(UUID id) {
@@ -32,6 +32,14 @@ public class Board {
         mDescription = null;
         mMapPoint = null;
         mDate = new Date();
+    }
+
+    public void cleanBoard(){
+        mUUID = null;
+        mTitle = null;
+        mDescription = null;
+        mMapPoint = null;
+        mDate = null;
     }
 
     public UUID getUUID() {
@@ -72,6 +80,7 @@ public class Board {
     public void setTitle(String title) {
         mTitle = title;
     }
+<<<<<<< HEAD
 
 
 
@@ -79,5 +88,7 @@ public class Board {
         Board.instance = instance;
     }
 
+=======
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 }
 

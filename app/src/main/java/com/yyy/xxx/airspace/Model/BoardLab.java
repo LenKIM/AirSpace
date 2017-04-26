@@ -79,15 +79,18 @@ public class BoardLab {
      * 모든 게시판 글들을 가져오자!
      */
     public List<Board> getBoards()  {
+
         List<Board> boards = new ArrayList<>();
 
         BoardCursorWrapper cursor = queryCrimes(null, null);
         try {
-            cursor.moveToFirst();
-            while (!cursor.isLast()) {
-                boards.add(cursor.getBoard());
-                cursor.moveToNext();
-                Log.d(TAG, cursor.getBoard().getUUID() + "");
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        boards.add(cursor.getBoard());
+                        Log.d(TAG, cursor.getBoard().getUUID() + "");
+                    } while (cursor.moveToNext());
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();

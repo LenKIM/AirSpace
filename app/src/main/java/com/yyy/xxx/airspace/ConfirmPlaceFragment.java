@@ -26,7 +26,11 @@ import butterknife.BindView;
  * Created by len on 2017. 4. 15..
  */
 
+<<<<<<< HEAD
 public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST{
+=======
+public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST {
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     private static final String TAG = ConfirmPlaceFragment.class.getName();
 
@@ -54,7 +58,7 @@ public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQ
     public ConfirmPlaceFragment() {
     }
 
-    public static ConfirmPlaceFragment newInstance(String id,String title, String desc){
+    public static ConfirmPlaceFragment newInstance(String id, String title, String desc){
         Bundle args = new Bundle();
         args.putSerializable(ARG_UUID, id);
         args.putSerializable(ARG_TITLE, title);
@@ -110,11 +114,16 @@ public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQ
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
                 //TODO 해당 데이터베이스를 찾아 지워버리기
+=======
+                //TODO 해당 데이터베이스를 찾아 지워버리기,MAP REFRESH
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
                 try {
                     Board board = BoardLab.getBoardLab(getActivity()).getBoard(UUID.fromString(id));
                     Log.d(TAG, board.getUUID() + "");
                     BoardLab.getBoardLab(getActivity()).deleteBoard(board);
+<<<<<<< HEAD
 
                     dismiss();
 
@@ -124,6 +133,13 @@ public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQ
                     e.printStackTrace();
                 }
 
+=======
+                    dismiss();
+                    //리프레쉬해줄수 있는 방법
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
             }
         });
 

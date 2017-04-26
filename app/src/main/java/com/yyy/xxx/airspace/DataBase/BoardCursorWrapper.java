@@ -18,14 +18,9 @@ import java.util.UUID;
 
 public class BoardCursorWrapper extends CursorWrapper {
 
-
-    /**
-     * Creates a cursor wrapper.
-     *
-     * @param cursor The underlying cursor to wrap.
-     */
     public BoardCursorWrapper(Cursor cursor) {
         super(cursor);
+
     }
 
     public Board getBoard() throws ParseException {
@@ -37,7 +32,6 @@ public class BoardCursorWrapper extends CursorWrapper {
         String mapPointString = getString(getColumnIndex(BoardTable.Cols.MAPPOINT));
 
         Board board = new Board(UUID.fromString(uuidString));
-
 
         SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
 

@@ -47,7 +47,11 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
                                                         DatePickerFragment.OnDateListener{
 
     private static final String TAG = AddBoardActivity.class.getName();
+<<<<<<< HEAD
 
+=======
+    private Board mBoard;
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     @BindView(R.id.edit_name)
     EditText name_Edit;
@@ -63,11 +67,23 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
 
     Uri mUri;
 
+<<<<<<< HEAD
 
     @Override
     public void onReceivedDate(Date date) {
         Board.getInstance().setDate(date);
         mTextView.setText(Board.getInstance().getDate());
+=======
+    public AddBoardActivity() {
+            mBoard = new Board();
+            Log.d(TAG, mBoard.getUUID() + "생성자!!");
+    }
+
+    @Override
+    public void onReceivedDate(Date date) {
+        mBoard.setDate(date);
+        mTextView.setText(mBoard.getDate());
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
 
     private String absoultePath;
@@ -102,23 +118,33 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
 
         Board.getInstance().setMapPoint(latitude+ "/" + longitude);
 
+        if (BuildConfig.DEBUG){
+            Log.d(TAG, mBoard.getTitle() + "   " + mBoard.getDescription() + "   " + mBoard.getDate());
+            Log.d(TAG, mBoard.getUUID() + "   " + mBoard.getMapPoint() + "   ");
+        }
+
         //BoardLab의 인스턴트를 만들어 저장하는 부분!
+<<<<<<< HEAD
         BoardLab.getBoardLab(getApplicationContext()).insertBoard(Board.getInstance());
 
+=======
+        BoardLab.getBoardLab(getApplicationContext()).insertBoard(mBoard);
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 //        if (!(mImageView.getDrawable() == null)) {
-
 //            onConfigCloudinary().url().generate()
 //          Cloudinary에 올리고 UUID로 판별하기 그리고 그걸로 가져오기
 //            Board.getInstance().setImage(mImageView.getDrawable());
 //        }
-
         setResult(RESULT_OK_INPUT_BOARD);
+
+        //화면 전환시키는것.
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 
     @OnClick(R.id.imageView) void onImageOnClick(){
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permissionCheck == PackageManager.PERMISSION_DENIED){
             //권한 없음
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, READ_REQEST_CODE);
@@ -171,7 +197,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
     private void doPickUpAction() {
         //앨범호출
         Intent intent2 = new Intent(Intent.ACTION_PICK);
-        intent2.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+        intent2.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent2, PICK_FROM_ALBUM);
     }
     @Override
@@ -292,6 +318,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         UUID crimeId = (UUID) getIntent()
                 .getSerializableExtra(EXTRA_BOARD_ID);
 
+<<<<<<< HEAD
         Log.d(TAG, crimeId + "");
 
         try {
@@ -306,6 +333,21 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
                 name_Edit.setText(board.getTitle());
                 desc_Edit.setText(board.getDescription());
             }
+=======
+
+        try {
+            //UUID의 비교는 != 으로
+            if (crimeId != null) {
+                mBoard = BoardLab.getBoardLab(getApplicationContext()).getBoard(crimeId);
+                mBoard.setTitle(mBoard.getTitle());
+                mBoard.setDescription(mBoard.getDescription());
+                mBoard.setMapPoint(mBoard.getMapPoint());
+
+                name_Edit.setText(mBoard.getTitle());
+                desc_Edit.setText(mBoard.getDescription());
+            }
+
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
         } catch (ParseException e) {
             e.printStackTrace();
         }

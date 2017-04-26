@@ -4,9 +4,23 @@ buildscript {
     repositories {
         jcenter()
     }
+    ext {
+        // Build SDK version
+        buildToolsVersion = '25.2.0'
+        supportLibraryVersion = '25.2.0'
+        butterKnifeVersion = '8.5.1'
+
+        // Image loader
+        // https://github.com/bumptech/glide
+        glideVersion = '3.7.0'
+
+        //stetho
+        stetho = '1.5.0'
+
+    }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
 
     }
@@ -16,7 +30,15 @@ allprojects {
     repositories {
         jcenter()
     }
+
 }
+
+ext {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    daumApiKey = properties.getProperty('daum_api_key', "\"\"")
+}
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

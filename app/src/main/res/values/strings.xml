@@ -16,4 +16,6 @@
     <string name="delete">삭제</string>
     <string name="update">변경</string>
     <string name="detail">자세히..</string>
+    <string name="airspace">AirSpace 시작중....</string>
+
 </resources>

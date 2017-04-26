@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ public class BoardFragment extends Fragment {
     public BoardFragment() {
         // Required empty public constructor
     }
-
 
     private RecyclerView mCardRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -45,7 +45,7 @@ public class BoardFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 
-        mBoards = BoardLab.getBoardLab(getActivity()).getBoards();
+
 
     }
 
@@ -55,12 +55,18 @@ public class BoardFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+<<<<<<< HEAD
         mCardRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
 
+=======
+        mBoards = BoardLab.getBoardLab(getActivity()).getBoards();
+        Log.d("GGGG", mBoards.size()+ "");
+
+        mCardRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+>>>>>>>  - 쓸모없는 부분 정리 / 1차 완
         mAdapter = new CardContentAdapter(mBoards);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mCardRecyclerView.setLayoutManager(linearLayoutManager);
-
         mCardRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -142,7 +148,6 @@ public class BoardFragment extends Fragment {
         public int getItemCount() {
             return mBoards.size();
         }
-
         public void setBoards(List<Board> boards){
             mBoards = boards;
         }
