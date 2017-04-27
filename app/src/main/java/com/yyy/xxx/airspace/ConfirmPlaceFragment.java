@@ -26,11 +26,7 @@ import butterknife.BindView;
  * Created by len on 2017. 4. 15..
  */
 
-<<<<<<< HEAD
-public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST{
-=======
 public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST {
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     private static final String TAG = ConfirmPlaceFragment.class.getName();
 
@@ -80,6 +76,7 @@ public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQ
         super.onCreateDialog(savedInstanceState);
 
         final String id = (String) getArguments().getSerializable(ARG_UUID);
+
         String desc = (String) getArguments().getSerializable(ARG_DESC);
         String title = (String) getArguments().getSerializable(ARG_DESC);
 
@@ -107,39 +104,22 @@ public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQ
             public void onClick(View v) {
                 Intent confirmIntent = AddBoardActivity.newIntent(getActivity(), UUID.fromString(id));
                 startActivity(confirmIntent);
-                Log.d(TAG, "확인 버튼 누름");
+                Log.d(TAG, "clicked changed Button");
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
-                //TODO 해당 데이터베이스를 찾아 지워버리기
-=======
-                //TODO 해당 데이터베이스를 찾아 지워버리기,MAP REFRESH
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
                 try {
                     Board board = BoardLab.getBoardLab(getActivity()).getBoard(UUID.fromString(id));
                     Log.d(TAG, board.getUUID() + "");
                     BoardLab.getBoardLab(getActivity()).deleteBoard(board);
-<<<<<<< HEAD
-
-                    dismiss();
-
-                    //리프레쉬해줄수 있는 방법
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-=======
                     dismiss();
                     //리프레쉬해줄수 있는 방법
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
             }
         });
 

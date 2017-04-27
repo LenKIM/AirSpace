@@ -23,13 +23,8 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
                 return BoardFragment.newInstance(null);
             case 1:
                 return MapFragment.newInstance(null,null);
-<<<<<<< HEAD
-            case 2:
-                return NotiFragment.newInstance(null,null);
-=======
 //            case 2:
 //                return NotiFragment.newInstance(null,null);
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
             default:
                 return null;
         }

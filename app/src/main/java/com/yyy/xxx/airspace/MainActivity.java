@@ -1,5 +1,6 @@
 package com.yyy.xxx.airspace;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -25,10 +26,6 @@ public class MainActivity extends AppCompatActivity implements
 
     ViewPageAdapter mViewPageAdapter;
 
-    /**
-     * 클라우너리 Config 함수
-     * @return
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,19 +90,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onPageScrollStateChanged(int state) {
 
     }
-<<<<<<< HEAD
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (resultCode){
-            case RESULT_OK_INPUT_BOARD :
-                //TODO 리프레쉬?
-                Log.d(TAG, "Refresh");
-            }
+        if (resultCode == RESULT_OK_INPUT_BOARD){
+            mViewPager.setCurrentItem(0);
         }
     }
-=======
 }
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완

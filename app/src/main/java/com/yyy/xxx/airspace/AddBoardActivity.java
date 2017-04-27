@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,13 +24,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yyy.xxx.airspace.Model.Board;
 import com.yyy.xxx.airspace.Model.BoardLab;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +42,9 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.graphics.Bitmap.CompressFormat;
+import static android.graphics.Bitmap.createBitmap;
 
 /**
  *
@@ -47,11 +56,8 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
                                                         DatePickerFragment.OnDateListener{
 
     private static final String TAG = AddBoardActivity.class.getName();
-<<<<<<< HEAD
 
-=======
     private Board mBoard;
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     @BindView(R.id.edit_name)
     EditText name_Edit;
@@ -59,34 +65,21 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
     @BindView(R.id.edit_contents)
     EditText desc_Edit;
 
-    @BindView(R.id.imageView)
+    @BindView(R.id.imageView_Captured)
     ImageView mImageView;
 
     @BindView(R.id.date_space)
     TextView mTextView;
 
-    Uri mUri;
+    String mCurrentPhotoPath;
 
-<<<<<<< HEAD
-
-    @Override
-    public void onReceivedDate(Date date) {
-        Board.getInstance().setDate(date);
-        mTextView.setText(Board.getInstance().getDate());
-=======
-    public AddBoardActivity() {
-            mBoard = new Board();
-            Log.d(TAG, mBoard.getUUID() + "생성자!!");
-    }
+    Uri photoURI;
 
     @Override
     public void onReceivedDate(Date date) {
         mBoard.setDate(date);
         mTextView.setText(mBoard.getDate());
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
-
-    private String absoultePath;
 
     @OnClick(R.id.btn_add_cancel) void onCancelClick(){
         finish();
@@ -98,7 +91,7 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date date = null;
         try {
-            date = simpleDateFormat.parse(Board.getInstance().getDate());
+            date = simpleDateFormat.parse(mBoard.getDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -108,15 +101,21 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
 
     @OnClick(R.id.btn_add_confirm) void onConfirmClick(){
         //UUID는 자동으로 생성되므로 여기서 따로 추가해줄필요가 없다.
-        Log.d(TAG, "새롭게 생긴 UUID는 " + Board.getInstance().getUUID() + "");
-        Board.getInstance().setTitle(name_Edit.getText().toString());
-        Board.getInstance().setDescription(desc_Edit.getText().toString());
+        Log.d(TAG, "새롭게 생긴 또는 이미 존재하는 UUID는 " + mBoard.getUUID() + "");
+        mBoard.setTitle(name_Edit.getText().toString());
+        mBoard.setDescription(desc_Edit.getText().toString());
+
 
         Intent getIntent = getIntent();
-        String latitude = getIntent.getStringExtra("latitude");
-        String longitude = getIntent.getStringExtra("longitude");
 
-        Board.getInstance().setMapPoint(latitude+ "/" + longitude);
+        if (getIntent.hasExtra("latitude")) {
+            String latitude = getIntent.getStringExtra("latitude");
+            String longitude = getIntent.getStringExtra("longitude");
+            mBoard.setMapPoint(latitude + "/" + longitude);
+            BoardLab.getBoardLab(getApplicationContext()).insertBoard(mBoard);
+        } else {
+            BoardLab.getBoardLab(getApplicationContext()).updateBoard(mBoard);
+        }
 
         if (BuildConfig.DEBUG){
             Log.d(TAG, mBoard.getTitle() + "   " + mBoard.getDescription() + "   " + mBoard.getDate());
@@ -124,25 +123,16 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         }
 
         //BoardLab의 인스턴트를 만들어 저장하는 부분!
-<<<<<<< HEAD
-        BoardLab.getBoardLab(getApplicationContext()).insertBoard(Board.getInstance());
 
-=======
-        BoardLab.getBoardLab(getApplicationContext()).insertBoard(mBoard);
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
-//        if (!(mImageView.getDrawable() == null)) {
-//            onConfigCloudinary().url().generate()
-//          Cloudinary에 올리고 UUID로 판별하기 그리고 그걸로 가져오기
-//            Board.getInstance().setImage(mImageView.getDrawable());
-//        }
         setResult(RESULT_OK_INPUT_BOARD);
 
         //화면 전환시키는것.
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//        이렇게하면, 화면이 중첩되어 항상 더 하나가 생긴다.
         finish();
     }
 
-    @OnClick(R.id.imageView) void onImageOnClick(){
+    @OnClick(R.id.imageView_Captured) void onImageOnClick(){
 
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permissionCheck == PackageManager.PERMISSION_DENIED){
@@ -166,7 +156,8 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
                 .setNeutralButton("앨범선택", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        doPickUpAction();
+                        doTakeAlbumAction();
+
                     }
 
 
@@ -182,124 +173,177 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         alertDialog.show();
     }
 
+    private void doTakeAlbumAction() {
+        Intent albumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+// /-1/1/content://media/external/images/media/235/ORIGINAL/NONE/912977700
+//        albumIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        startActivityForResult(albumIntent, REQUEST_IMAGE_ALBUM);
+    }
+
     private void doTakePictureAction() {
         //사진촬영후 가져오기
-        Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        //임시로 사용할 파일의 경로
-        String url = "temp_" + String.valueOf(System.currentTimeMillis())+ ".jpg";
-        mUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
-
-        intent1.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-        startActivityForResult(intent1, PICK_FROM_CAMERA);
+        String url = "tmp_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+        photoURI = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
-    private void doPickUpAction() {
-        //앨범호출
-        Intent intent2 = new Intent(Intent.ACTION_PICK);
-        intent2.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        startActivityForResult(intent2, PICK_FROM_ALBUM);
+
+    /**
+     *  add the photo to Gallery when you take a photo
+     */
+    private void doGalleryAddPic() {
+        Intent mediaScanIntent =new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+
     }
+
+    public Bitmap getBitmap() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inInputShareable = true;
+        options.inDither=false;
+        options.inTempStorage=new byte[32 * 1024];
+        options.inPurgeable = true;
+        options.inJustDecodeBounds = false;
+
+        File f = new File(mCurrentPhotoPath);
+
+        FileInputStream fs=null;
+        try {
+            fs = new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+            //TODO do something intelligent
+            e.printStackTrace();
+        }
+
+        Bitmap bm = null;
+
+        try {
+            if(fs!=null) bm= BitmapFactory.decodeFileDescriptor(fs.getFD(), null, options);
+        } catch (IOException e) {
+            //TODO do something intelligent
+            e.printStackTrace();
+        } finally{
+            if(fs!=null) {
+                try {
+                    fs.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bm;
+    }
+
+    public int exifOrientationToDegrees(int exifOrientation)
+    {
+        if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_90)
+        {
+            return 90;
+        }
+        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_180)
+        {
+            return 180;
+        }
+        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_270)
+        {
+            return 270;
+        }
+        return 0;
+    }
+
+    public static Bitmap rotate(Bitmap image, int degrees)
+    {
+        if(degrees != 0 && image != null)
+        {
+            Matrix m = new Matrix();
+            m.setRotate(degrees, (float)image.getWidth(), (float)image.getHeight());
+
+            try
+            {
+                Bitmap b = createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), m, true);
+
+                if(image != b)
+                {
+                    image.recycle();
+                    image = b;
+                }
+
+                image = b;
+            }
+            catch(OutOfMemoryError ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        return image;
+    }
+
+    public void saveBitmap(Bitmap bitmap) {
+        File file = new File(mCurrentPhotoPath);
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+        }
+        catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        bitmap.compress(CompressFormat.JPEG, 100, out) ;
+        try {
+            out.close();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK){
-            mTextView.setText(Board.getInstance().getDate());
+        if (resultCode == RESULT_OK) {
+            mTextView.setText(mBoard.getDate());
         }
 
-        switch (requestCode){
-            case PICK_FROM_ALBUM: {
-                //이후의 처리가 카메라와 동일하기 때문에 break를 설정하지 않겠습니다.
-                mUri = data.getData();
-                Log.d(TAG, "선택한 Uri은" + mUri.getPath().toString());
-            }
-            case PICK_FROM_CAMERA :
-            {
-                //이미지를 가져온 이후의 리사이즈할 이미지크기를 결정
-                //이후에 이미지 crop application을 호출합니다.
-                Intent intent = new Intent("com.android.camera.action.CROP");
-                intent.setDataAndType(mUri, "image/*");
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
 
-                //CROP할 이미지를 200*200크기로 저장
-                intent.putExtra("outputX",200); //CROp한 이미지의 x축 크기
-                intent.putExtra("outputY",200); //CROP한 이미지의 y축 크기
-                intent.putExtra("aspectX",1); //CROP박스의 X축 비율
-                intent.putExtra("aspectY",1); //CROP박스의 Y축 비율
-                intent.putExtra("scale", true);
-                intent.putExtra("return-data", true);
-                startActivityForResult(intent, CROP_FROM_iMAGE);
-                break;
-            }
+                case REQUEST_IMAGE_ALBUM: {
 
-            case CROP_FROM_iMAGE :
-            {
-                //크룹이 된 이후의 이미지를 넘겨 받습니다
-                //이미지뷰에 이미지를 보여준다거나 부가적인 작업 이후에
-                //임시 파일을 삭제합니다
-                if (resultCode != RESULT_OK){
-                    return;
-                }
+                    photoURI = data.getData();
+                    Log.d(TAG, photoURI.getPath());
 
-                final Bundle extras = data.getExtras();
-
-                //CROP된 이미지를 저장하기 위한 FILE경로
-                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                        "/AirSpace/" + System.currentTimeMillis() + ".jpg";
-
-                if (extras != null){
-                    Bitmap photo = extras.getParcelable("data"); //CROP된 BITMAP
-                    Log.d(TAG, photo.toString());
-                    mImageView.setImageBitmap(photo);
-
-                    storeCropImage(photo, filePath);//CROP된 이미지를 외부저장소, 앨범에 저장한다
-                    absoultePath = filePath;
+                    mBoard.setPhotoUri(photoURI.toString());
+                    Glide.with(AddBoardActivity.this)
+                            .load(photoURI)
+                            .centerCrop()
+                            .crossFade()
+                            .into(mImageView);
                     break;
                 }
+//            Coulnt ensure I get extras from EXTRA_OUTPUT
+//            So, should find the last pixs
+                case REQUEST_IMAGE_CAPTURE: {
+                    Uri imgUri = photoURI;
+                    mBoard.setPhotoUri(imgUri + "");
 
-                //임시 파일 삭제
-                File f = new File(mUri.getPath());
-                if (f.exists())
-                {
-                    f.delete();
+                    Glide.with(getApplicationContext())
+                            .load(imgUri)
+                            .asBitmap()
+                            .centerCrop()
+                            .into(mImageView);
+                    break;
                 }
             }
-        }
-    }
-
-    /**
-     * /AirSpace 이라는 디렉토리가 있는지 if문을 체크를 한다
-     * 디렉터리 폴더가 없다면 .mkdir()함수호출을 통해 폴더를 만든다
-     * 이후에 createNewFile()을 통해 파일을 생성하고 BufferedOutputStream과
-     * FileOutputStream복사를 진행한다
-     *
-     * sendBroadcaset()함수는 폰의 앨범에 크롭된 사진을 갱신하는 함수이다.
-     * 이 함수를 쓰지 않는다면 크롭된 사진을 저장해도 앨범에 안보이며 직접 파일 관리자
-     * 앱을 통해 폴더를 들어가야만 볼 수 있다.
-     *
-     *  Bitmap을 저장하는 부분
-     * @param photo
-     * @param filePath
-     */
-    private void storeCropImage(Bitmap photo, String filePath) {
-        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/AirSpace";
-        File directory_AirSpace = new File(dirPath);
-        if (!directory_AirSpace.exists()){
-            directory_AirSpace.mkdir();
-        }
-        File copyFile = new File(filePath);
-        BufferedOutputStream out = null;
-        try {
-        copyFile.createNewFile();
-        out = new BufferedOutputStream(new FileOutputStream(copyFile));
-        photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
-
-        out.flush();
-        out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -315,39 +359,29 @@ public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQU
         setContentView(R.layout.activity_addboard);
         ButterKnife.bind(this);
 
-        UUID crimeId = (UUID) getIntent()
+        UUID boardId = (UUID) getIntent()
                 .getSerializableExtra(EXTRA_BOARD_ID);
 
-<<<<<<< HEAD
-        Log.d(TAG, crimeId + "");
+        if (boardId == null){
+            mBoard = new Board();
+            Log.d(TAG, mBoard.getUUID() + "Created");
+        }
 
-        try {
-
-            //UUID의 비교는 != 으로
-            if (crimeId != null) {
-                Board board = BoardLab.getBoardLab(getApplicationContext()).getBoard(crimeId);
-                Board.getInstance().setTitle(board.getTitle());
-                Board.getInstance().setDescription(board.getDescription());
-                Board.getInstance().setMapPoint(board.getMapPoint());
-
-                name_Edit.setText(board.getTitle());
-                desc_Edit.setText(board.getDescription());
-            }
-=======
 
         try {
             //UUID의 비교는 != 으로
-            if (crimeId != null) {
-                mBoard = BoardLab.getBoardLab(getApplicationContext()).getBoard(crimeId);
-                mBoard.setTitle(mBoard.getTitle());
-                mBoard.setDescription(mBoard.getDescription());
+            if (boardId != null) {
+                mBoard = BoardLab.getBoardLab(getApplicationContext()).getBoard(boardId);
                 mBoard.setMapPoint(mBoard.getMapPoint());
-
                 name_Edit.setText(mBoard.getTitle());
                 desc_Edit.setText(mBoard.getDescription());
+                Glide.with(getApplicationContext())
+                        .load(mBoard.getPhotoUri())
+                        .asBitmap()
+                        .centerCrop()
+                        .into(mImageView);
             }
 
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
         } catch (ParseException e) {
             e.printStackTrace();
         }

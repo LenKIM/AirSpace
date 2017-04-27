@@ -6,9 +6,10 @@ package com.yyy.xxx.airspace;
 
 public interface ACTIVITY_REQUEST {
 
-    int PICK_FROM_CAMERA = 1;
-    int PICK_FROM_ALBUM = 2;
-    int CROP_FROM_iMAGE = 3;
+    int REQUEST_IMAGE_CAPTURE = 1;
+    int REQUEST_IMAGE_ALBUM = 2;
+    int REQUEST_IMAGE_CROP = 3;
+
 
     int READ_REQEST_CODE = 4;
     int REQUEST_DATE = 5;

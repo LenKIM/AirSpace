@@ -51,7 +51,7 @@
                 android:id="@+id/card_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/card_Imageview"
+                android:layout_below="@id/card_Imageview"
                 android:layout_marginLeft="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines"
                 android:layout_marginBottom="@dimen/md_keylines"

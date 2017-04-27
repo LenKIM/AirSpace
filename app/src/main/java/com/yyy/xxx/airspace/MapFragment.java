@@ -35,22 +35,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 
 
-<<<<<<< HEAD
-public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST{
-=======
 public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST {
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
     private static final String ARG_PARAM1 = null;
     private static final String ARG_PARAM2 = null;
 
-    public static final String API_KEY = "c230fe73a3ea6267acd784b910b96593";
+//    public static final String API_KEY = "c230fe73a3ea6267acd784b910b96593";
     private static final String TAG = "MapFragment";
     private static final String DIALOG_CONFIRM = "confirm";
 
@@ -137,7 +134,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         btn_Search = (Button) view.findViewById(R.id.button_search_place);
         edit_Search = (EditText) view.findViewById(R.id.edit_search_place);
 
-        mapView.setDaumMapApiKey(API_KEY);
+        mapView.setDaumMapApiKey(BuildConfig.DAUM_API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
 //        mapView.setCalloutBalloonAdapter(new MyCustomBalloonAdapter2());
@@ -159,8 +156,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                 double longitude = geoCoordinate.longitude; // 경도
                 int radius = 10000; // 중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 사용. meter 단위 (0 ~ 10000)
                 int page = 1; // 페이지 번호 (1 ~ 3). 한페이지에 15개
-                String apikey = API_KEY;
-
+                String apikey = BuildConfig.DAUM_API_KEY;
                 Searcher searcher = new Searcher(); // net.daum.android.map.openapi.search.Searcher
                 searcher.searchKeyword( getContext(), query, latitude, longitude, radius, page, apikey, new OnFinishSearchListener() {
                     @Override
@@ -262,14 +258,35 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         Log.d(TAG, "Get All stored MapPoints");
         List<Board> boards = BoardLab.getBoardLab(getActivity()).getBoards();
+        List<Board> temps = new ArrayList<>();
+        //만약 동일 UUID를 갖는다면, 덮어쓰
+        //중복 제거 선택 정렬사용하기.
+//        BoardLab.getBoardLab(getContext()).deleteAllBoard();
 
         for (Board singleBoard: boards) {
+
             tempMapPoint = singleBoard.getMapPoint();
             mapPoint = tempMapPoint.split("/");
             title = singleBoard.getTitle();
             AllForMarker(mapView, mapPoint, title);
         }
     }
+
+
+//    // 중복된 list 데이터 생성
+//    List<String> dataList = new ArrayList<String>();
+// dataList.add("11111");
+// dataList.add("22222");
+// dataList.add("33333");
+// dataList.add("33333");
+// ...
+//    // 중복 제거된 list 데이터 생성
+//    List<String> newList = new ArrayList<String>();
+// for(int ii = 0 ; ii < dataList.size() ; ii++){
+//        if(!newList.contains(dataList.get(ii)){
+//            newList.add(dataList.get(ii));
+//        }
+//    }
     /**
      * 지도에 마커를 꼭 찍는 함수.
      * @param mapView
@@ -281,18 +298,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mCustomMarker.setItemName(title);
         mCustomMarker.setTag(1);
 
-<<<<<<< HEAD
-
-        double latitude = Double.parseDouble(points[0]);
-        double longtitude = Double.parseDouble(points[1]);
-
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longtitude);
-        mCustomMarker.setMapPoint(mapPoint);
-        mCustomMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-        mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
-        mCustomMarker.setCustomImageAutoscale(false);
-        mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
-=======
         if (!points.equals(null)) {
             double latitude = Double.parseDouble(points[0]);
             double longtitude = Double.parseDouble(points[1]);
@@ -303,7 +308,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             mCustomMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
             mCustomMarker.setCustomImageAutoscale(false);
             mCustomMarker.setCustomImageAnchor(0.5f, 1.0f);
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 
             mapView.addPOIItem(mCustomMarker);
             mapView.selectPOIItem(mCustomMarker, true);
@@ -340,11 +344,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             createCustomMarker(mapView, mapPoint);
             showAll(mapPoint);
             mMapPoint = mapPoint;
-<<<<<<< HEAD
-            Log.d(TAG, "Insert Complete MapPoint" + mapPoint.getMapPointGeoCoord().longitude + "/" + mapPoint.getMapPointGeoCoord().latitude);
-=======
             Log.d(TAG, "Insert Complete MapPoint" + mapPoint.getMapPointGeoCoord().latitude + "/" + mapPoint.getMapPointGeoCoord().longitude);
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
 
     /**
@@ -421,10 +421,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         String mapPoint =  mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude + "/" + mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude;
 
         if (hasBoard(mapPoint)){
-<<<<<<< HEAD
-
-=======
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
             Board board = getBoardByMapPoint(mapPoint);
             FragmentManager manager = getFragmentManager();
 //                DatePickerFragment dialog = new DatePickerFragment();
@@ -441,7 +437,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            Intent confirmIntent = new Intent(getActivity(), AddBoardActivity.class);
+//                            Intent confirmIntent = new Intent(getActivity(), AddBoardActivityWithOutGlide.class);
                             Intent confirmIntent = AddBoardActivity.newIntent(getActivity(), null);
                             String latitude = mMapPoint.getMapPointGeoCoord().latitude + "";
                             String longitude = mMapPoint.getMapPointGeoCoord().longitude + "";
@@ -478,31 +474,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
             }
         }
         return false;
-<<<<<<< HEAD
-    }
-
-    private Board getBoardByMapPoint(String point){
-
-        String tempMapPoint;
-
-        List<Board> boards = BoardLab.getBoardLab(getActivity()).getBoards();
-
-        for (Board singleBoard: boards) {
-            tempMapPoint = singleBoard.getMapPoint();
-            if (tempMapPoint.equals(point)){
-                return singleBoard;
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-        Log.d(TAG, "onCalloutBalloonOfPOIItemTouched");
-        mapView.refreshMapTiles();
-
-=======
     }
 
     private Board getBoardByMapPoint(String point){
@@ -524,7 +495,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         Log.d(TAG, "onCalloutBalloonOfPOIItemTouched11");
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
     }
 
     @Override
