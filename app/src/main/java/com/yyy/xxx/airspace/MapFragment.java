@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     private String mParam1;
     private String mParam2;
     protected MapPoint mMapPoint;
+    private Boolean isLocationOn;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
 
@@ -65,6 +68,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     @BindView(R.id.button_search_place)
     EditText edit_Search;
 
+    private ImageButton mMyLocationButton;
     private Button btn_Search;
     private MapPOIItem mDefaultMarker;
     private MapPOIItem mCustomMarker;
@@ -133,12 +137,25 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
 
         btn_Search = (Button) view.findViewById(R.id.button_search_place);
         edit_Search = (EditText) view.findViewById(R.id.edit_search_place);
+        mMyLocationButton = (ImageButton) view.findViewById(R.id.btn_mylocation);
 
         mapView.setDaumMapApiKey(BuildConfig.DAUM_API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
 //        mapView.setCalloutBalloonAdapter(new MyCustomBalloonAdapter2());
 
+        isLocationOn = false;
+
+        mMyLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isLocationOn = !isLocationOn){
+                    mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+                }else {
+                    mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+                }
+            }
+        });
 
         btn_Search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,13 +256,19 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
     }
 
     @Override
-    public void onMapViewInitialized(MapView mapView) {
+    public void onMapViewInitialized(final MapView mapView) {
         Log.i(TAG, "onMapViewInitialized");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+            }
+        },1000);
 
         MyCustomBalloonAdapter customBallon = new MyCustomBalloonAdapter();
         //이전에 방문했던 지역을 지도에 표시.
         mapView.setCalloutBalloonAdapter(customBallon);
-
         getAllMapPointsAndMakeMarker(mapView);
     }
 
@@ -272,27 +295,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         }
     }
 
-
-//    // 중복된 list 데이터 생성
-//    List<String> dataList = new ArrayList<String>();
-// dataList.add("11111");
-// dataList.add("22222");
-// dataList.add("33333");
-// dataList.add("33333");
-// ...
-//    // 중복 제거된 list 데이터 생성
-//    List<String> newList = new ArrayList<String>();
-// for(int ii = 0 ; ii < dataList.size() ; ii++){
-//        if(!newList.contains(dataList.get(ii)){
-//            newList.add(dataList.get(ii));
-//        }
-//    }
-    /**
-     * 지도에 마커를 꼭 찍는 함수.
-     * @param mapView
-     * @param points
-     * @param title
-     */
     private void AllForMarker(MapView mapView, String[] points, String title) {
         mCustomMarker = new MapPOIItem();
         mCustomMarker.setItemName(title);

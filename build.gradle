@@ -5,17 +5,6 @@ buildscript {
         jcenter()
     }
     ext {
-        // Build SDK version
-        buildToolsVersion = '25.2.0'
-        supportLibraryVersion = '25.2.0'
-        butterKnifeVersion = '8.5.1'
-
-        // Image loader
-        // https://github.com/bumptech/glide
-        glideVersion = '3.7.0'
-
-        //stetho
-        stetho = '1.5.0'
 
     }
 

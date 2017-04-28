@@ -15,12 +15,7 @@ public class Board {
     private String mDescription;
     private String mTitle;
     private Date mDate;
-
-    private static Board instance = new Board();
-
-    public static Board getInstance(){
-        return instance;
-    }
+    private String photoUri;
 
     public Board() {
         this(UUID.randomUUID());
@@ -40,6 +35,13 @@ public class Board {
         mDescription = null;
         mMapPoint = null;
         mDate = null;
+    }
+    public String getPhotoUri() {
+        return photoUri;
+    }
+
+    public void setPhotoUri(String photoUri) {
+        this.photoUri = photoUri;
     }
 
     public UUID getUUID() {
@@ -80,15 +82,5 @@ public class Board {
     public void setTitle(String title) {
         mTitle = title;
     }
-<<<<<<< HEAD
-
-
-
-    public static void setInstance(Board instance) {
-        Board.instance = instance;
-    }
-
-=======
->>>>>>>  - 쓸모없는 부분 정리 / 1차 완
 }
 

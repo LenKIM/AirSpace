@@ -30,15 +30,19 @@ public class BoardCursorWrapper extends CursorWrapper {
         String dateString = getString(getColumnIndex(BoardTable.Cols.DATE));
         String contentString = getString(getColumnIndex(BoardTable.Cols.CONTENT));
         String mapPointString = getString(getColumnIndex(BoardTable.Cols.MAPPOINT));
+        String photoUrlString = getString(getColumnIndex(BoardTable.Cols.PHOTOURL));
 
         Board board = new Board(UUID.fromString(uuidString));
 
         SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Date toTransDate = transFormat.parse(dateString);
+
+        board.setDate(toTransDate);
         board.setTitle(titleString);
         board.setDescription(contentString);
         board.setMapPoint(mapPointString);
+        board.setPhotoUri(photoUrlString);
 
         return board;
     }

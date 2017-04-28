@@ -17,32 +17,17 @@ public class CustomViewPager extends ViewPager {
 
     private boolean enabled; //이 것이 스크롤을 막아주는 중요 변수!
 
-
-
     public CustomViewPager(Context context, AttributeSet attrs) {
-
         super(context, attrs);
-
         this.enabled = true;
-
     }
-
-
-
     @Override
-
     public boolean onTouchEvent(MotionEvent event) {
-
         try {
-
             if (this.enabled) {
-
 //				Log.i("INFO", "스크롤 중..");
-
                 return super.onTouchEvent(event);
-
             }
-
         } catch (Exception e) {
 
             StringWriter sw = new StringWriter();
@@ -74,7 +59,6 @@ public class CustomViewPager extends ViewPager {
             return super.onInterceptTouchEvent(event);
 
         }
-
 
 
         return false;

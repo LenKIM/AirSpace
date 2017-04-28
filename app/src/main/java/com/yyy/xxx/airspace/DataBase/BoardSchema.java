@@ -16,6 +16,7 @@ public class BoardSchema {
             public static final String DATE = "date";
             public static final String CONTENT = "content";
             public static final String MAPPOINT = "mapPoint";
+            public static final String PHOTOURL = "photoUrl";
             //Image는 서버로 보내기
         }
     }

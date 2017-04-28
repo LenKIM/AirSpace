@@ -1,9 +1,13 @@
 package com.yyy.xxx.airspace;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getName();
 
     @BindView(R.id.container)
-    ViewPager mViewPager;
+    CustomViewPager mViewPager;
 
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
@@ -31,6 +35,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_DENIED){
+            //권한 없음
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA}, 0);
+        } else {
+            //권한 있음
+        }
+
 
         mViewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mViewPageAdapter);
@@ -46,11 +59,13 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.navigation_home:
                         mViewPager.setCurrentItem(0);
                         mViewPager.invalidate();
+                        mViewPager.setPagingDisabled();
                         Log.d(TAG, "Page 0 selected");
                         return true;
                     case R.id.navigation_dashboard:
                         mViewPager.setCurrentItem(1);
                         mViewPager.invalidate();
+                        mViewPager.setPagingDisabled();
                         Log.d(TAG, "Page 1 selected");
                         return true;
 //                    case R.id.navigation_notifications:

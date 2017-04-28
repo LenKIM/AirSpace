@@ -65,6 +65,11 @@ public class BoardLab {
         );
     }
 
+    public void deleteAllBoard(){
+        mDatabase.delete(BoardTable.NAME,
+                null,
+                null);
+    }
     public static ContentValues getContentValues(Board board) {
         ContentValues values = new ContentValues();
         values.put(Cols.UUID, board.getUUID().toString());
@@ -72,6 +77,7 @@ public class BoardLab {
         values.put(Cols.DATE, board.getDate());
         values.put(Cols.CONTENT, board.getDescription());
         values.put(Cols.MAPPOINT, board.getMapPoint());
+        values.put(Cols.PHOTOURL, board.getPhotoUri());
         return values;
     }
 

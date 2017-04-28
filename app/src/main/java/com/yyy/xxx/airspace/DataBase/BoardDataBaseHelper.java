@@ -28,6 +28,7 @@ public class BoardDataBaseHelper extends SQLiteOpenHelper {
                 BoardTable.Cols.TITLE + "," +
                 BoardTable.Cols.CONTENT + "," +
                 BoardTable.Cols.DATE + "," +
+                BoardTable.Cols.PHOTOURL + "," +
                 BoardTable.Cols.MAPPOINT + ")"
         );
     }
