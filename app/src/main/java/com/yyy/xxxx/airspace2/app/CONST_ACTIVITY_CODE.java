@@ -1,10 +1,10 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.app;
 
 /**
  * Created by len on 2017. 3. 29..
  */
 
-public interface ACTIVITY_REQUEST {
+public interface CONST_ACTIVITY_CODE {
 
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_IMAGE_ALBUM = 2;

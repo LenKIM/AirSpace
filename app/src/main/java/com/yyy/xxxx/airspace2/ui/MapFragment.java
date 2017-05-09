@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +20,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
+import com.yyy.xxxx.airspace2.BuildConfig;
 import com.yyy.xxxx.airspace2.Model.Board;
 import com.yyy.xxxx.airspace2.Model.BoardLab;
+import com.yyy.xxxx.airspace2.R;
 import com.yyy.xxxx.airspace2.search.Item;
 import com.yyy.xxxx.airspace2.search.OnFinishSearchListener;
 import com.yyy.xxxx.airspace2.search.Searcher;
@@ -44,7 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 
 
-public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ACTIVITY_REQUEST {
+public class MapFragment extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, CONST_ACTIVITY_CODE {
 
     private static final String ARG_PARAM1 = null;
     private static final String ARG_PARAM2 = null;
@@ -439,7 +442,7 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            Intent confirmIntent = new Intent(getActivity(), AddBoardActivityWithOutGlide.class);
+//                            Intent confirmIntent = new Intent(getActivity(), AddBoardCONSTActivityWithOutGlide.class);
                             Intent confirmIntent = AddBoardActivity.newIntent(getActivity(), null);
                             String latitude = mMapPoint.getMapPointGeoCoord().latitude + "";
                             String longitude = mMapPoint.getMapPointGeoCoord().longitude + "";

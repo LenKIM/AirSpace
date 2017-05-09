@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.app;
 
 import android.app.Application;
 

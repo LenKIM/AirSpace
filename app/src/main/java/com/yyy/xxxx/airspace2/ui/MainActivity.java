@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,12 +13,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
+import com.yyy.xxxx.airspace2.R;
+import com.yyy.xxxx.airspace2.ViewPageAdapter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
         ViewPager.OnPageChangeListener,
-        ACTIVITY_REQUEST {
+        CONST_ACTIVITY_CODE {
 
     private static final String TAG = MainActivity.class.getName();
 

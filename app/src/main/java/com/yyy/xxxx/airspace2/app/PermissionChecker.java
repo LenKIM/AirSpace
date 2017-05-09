@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.app;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,7 +8,7 @@ import android.support.v4.app.ActivityCompat;
 /**
  * Created by brilcom on 2016-07-26.
  */
-public class PermissionChecker implements ACTIVITY_REQUEST{
+public class PermissionChecker implements CONST_ACTIVITY_CODE {
 
     private static final int REQUEST_PERMISSION = 2;
 

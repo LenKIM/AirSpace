@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 /**
  * Created by len on 2017. 4. 18..

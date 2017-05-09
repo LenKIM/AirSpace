@@ -26,6 +26,9 @@ import android.widget.TextView;
 
 import com.yyy.xxxx.airspace2.Model.Board;
 import com.yyy.xxxx.airspace2.Model.BoardLab;
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
+import com.yyy.xxxx.airspace2.ui.DatePickerFragment;
+import com.yyy.xxxx.airspace2.ui.MainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,13 +53,14 @@ import static android.provider.MediaStore.EXTRA_OUTPUT;
 /**
  *
  * Created by len on 2017. 3. 23..
+ * # 이거는 예외 클래스
  *
  */
 
-public class AddBoardActivityWithOutGlide extends AppCompatActivity implements ACTIVITY_REQUEST,
+public class AddBoardCONSTActivityWithOutGlide extends AppCompatActivity implements CONST_ACTIVITY_CODE,
                                                         DatePickerFragment.OnDateListener{
 
-    private static final String TAG = AddBoardActivityWithOutGlide.class.getName();
+    private static final String TAG = AddBoardCONSTActivityWithOutGlide.class.getName();
     private Board mBoard;
 
     @BindView(R.id.edit_name)
@@ -75,7 +79,7 @@ public class AddBoardActivityWithOutGlide extends AppCompatActivity implements A
 
     Uri photoURI;
 
-    public AddBoardActivityWithOutGlide() {
+    public AddBoardCONSTActivityWithOutGlide() {
             mBoard = new Board();
             Log.d(TAG, mBoard.getUUID() + " Created");
     }
@@ -140,7 +144,7 @@ public class AddBoardActivityWithOutGlide extends AppCompatActivity implements A
             //권한 있음
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddBoardActivityWithOutGlide.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddBoardCONSTActivityWithOutGlide.this);
         Log.d(TAG, "이미지 촬영하기 동작");
 
          builder.setTitle("사진업로드하기")
@@ -435,7 +439,7 @@ public class AddBoardActivityWithOutGlide extends AppCompatActivity implements A
     }
 
     public static Intent newIntent(Context context, UUID boardid){
-        Intent intent = new Intent(context, AddBoardActivityWithOutGlide.class);
+        Intent intent = new Intent(context, AddBoardCONSTActivityWithOutGlide.class);
         intent.putExtra(EXTRA_BOARD_ID, boardid);
         return intent;
     }

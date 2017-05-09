@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -25,8 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
+import com.yyy.xxxx.airspace2.BuildConfig;
 import com.yyy.xxxx.airspace2.Model.Board;
 import com.yyy.xxxx.airspace2.Model.BoardLab;
+import com.yyy.xxxx.airspace2.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +55,7 @@ import static android.graphics.Bitmap.createBitmap;
  *
  */
 
-public class AddBoardActivity extends AppCompatActivity implements ACTIVITY_REQUEST,
+public class AddBoardActivity extends AppCompatActivity implements CONST_ACTIVITY_CODE,
                                                         DatePickerFragment.OnDateListener{
 
     private static final String TAG = AddBoardActivity.class.getName();

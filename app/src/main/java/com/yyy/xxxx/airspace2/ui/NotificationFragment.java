@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NotiFragment.OnFragmentInteractionListener} interface
+ * {@link NotificationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NotiFragment#newInstance} factory method to
+ * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotiFragment extends Fragment {
+public class NotificationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -26,7 +26,7 @@ public class NotiFragment extends Fragment {
 
 //    private OnFragmentInteractionListener mListener;
 
-    public NotiFragment() {
+    public NotificationFragment() {
         // Required empty public constructor
     }
 
@@ -38,8 +38,8 @@ public class NotiFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment MapFragment.
      */
-    public static NotiFragment newInstance(String param1, String param2) {
-        NotiFragment fragment = new NotiFragment();
+    public static NotificationFragment newInstance(String param1, String param2) {
+        NotificationFragment fragment = new NotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

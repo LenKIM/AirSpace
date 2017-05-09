@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
+import com.yyy.xxxx.airspace2.R;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,7 +21,7 @@ import java.util.GregorianCalendar;
  * Created by len on 2017. 1. 4..
  */
 
-public class DatePickerFragment extends DialogFragment implements ACTIVITY_REQUEST {
+public class DatePickerFragment extends DialogFragment implements CONST_ACTIVITY_CODE {
 
     public interface OnDateListener{
         void onReceivedDate(Date date);

@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.yyy.xxxx.airspace2.app.PermissionUtils;
+import com.yyy.xxxx.airspace2.R;
 
 /**
  * Created by len on 2017. 4. 19..
@@ -63,6 +66,7 @@ public class Splash extends AppCompatActivity {
 
         if (PermissionUtils.checkPermissions(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA )){
             startActivity(new Intent(Splash.this, MainActivity.class));
+            finish();
         } else {
             PermissionUtils.requestPermissions(this, 0, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA);
         }

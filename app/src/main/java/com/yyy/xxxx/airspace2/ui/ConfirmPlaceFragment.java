@@ -1,4 +1,4 @@
-package com.yyy.xxxx.airspace2;
+package com.yyy.xxxx.airspace2.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,8 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
 import com.yyy.xxxx.airspace2.Model.Board;
 import com.yyy.xxxx.airspace2.Model.BoardLab;
+import com.yyy.xxxx.airspace2.R;
 
 import java.text.ParseException;
 import java.util.UUID;
@@ -26,7 +28,7 @@ import butterknife.BindView;
  * Created by len on 2017. 4. 15..
  */
 
-public class ConfirmPlaceFragment extends DialogFragment implements ACTIVITY_REQUEST {
+public class ConfirmPlaceFragment extends DialogFragment implements CONST_ACTIVITY_CODE {
 
     private static final String TAG = ConfirmPlaceFragment.class.getName();
 
