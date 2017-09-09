@@ -13,10 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
 import com.yyy.xxxx.airspace2.Model.Board;
 import com.yyy.xxxx.airspace2.Model.BoardLab;
 import com.yyy.xxxx.airspace2.R;
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
 
 import java.text.ParseException;
 import java.util.UUID;
@@ -84,14 +84,6 @@ public class ConfirmPlaceFragment extends DialogFragment implements CONST_ACTIVI
 
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_detailcomfirm_message, null);
-
-        alertTitleTextView = (TextView) view.findViewById(R.id.alert_title);
-        alertDescTextView = (TextView) view.findViewById(R.id.alert_description);
-
-        moveTodetailedButton = (Button) view.findViewById(R.id.btn_Dialog_MoveToDetailed);
-        changeButton = (Button) view.findViewById(R.id.btn_Dialog_Change);
-        deleteButton = (Button) view.findViewById(R.id.btn_Dialog_Delete);
-        cancelButton = (Button) view.findViewById(R.id.btn_Dialog_cancel);
 
         moveTodetailedButton.setOnClickListener(new View.OnClickListener() {
             @Override

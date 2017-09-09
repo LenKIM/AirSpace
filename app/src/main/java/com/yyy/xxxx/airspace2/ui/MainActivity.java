@@ -13,9 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
 import com.yyy.xxxx.airspace2.R;
 import com.yyy.xxxx.airspace2.ViewPageAdapter;
+import com.yyy.xxxx.airspace2.app.CONST_ACTIVITY_CODE;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

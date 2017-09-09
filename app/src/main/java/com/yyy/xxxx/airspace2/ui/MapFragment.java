@@ -145,7 +145,6 @@ public class MapFragment extends Fragment implements MapView.MapViewEventListene
         mapView.setDaumMapApiKey(BuildConfig.DAUM_API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-//        mapView.setCalloutBalloonAdapter(new MyCustomBalloonAdapter2());
 
         isLocationOn = false;
 

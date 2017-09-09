@@ -7,11 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.yyy.xxxx.airspace2.ui.BoardFragment;
 import com.yyy.xxxx.airspace2.ui.MapFragment;
 
-/**
- * Created by len on 2017. 3. 13..
- * ViewPagerAdapter
- */
-
 public class ViewPageAdapter extends FragmentPagerAdapter {
 
     public ViewPageAdapter(FragmentManager fm) {
@@ -26,8 +21,6 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
                 return BoardFragment.newInstance(null);
             case 1:
                 return MapFragment.newInstance(null,null);
-//            case 2:
-//                return NotificationFragment.newInstance(null,null);
             default:
                 return null;
         }

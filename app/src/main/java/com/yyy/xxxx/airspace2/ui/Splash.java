@@ -56,11 +56,11 @@ public class Splash extends AppCompatActivity {
             gpsConnectCheck();
             Log.d(TAG, "GPS Ok");
         } else {
-            NextActivity();
+            nextActivity();
         }
     }
 
-    private void NextActivity() {
+    private void nextActivity() {
 
         Log.d(TAG, "Perm Ok");
 
