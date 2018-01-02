@@ -7,4 +7,6 @@
 ## 활용 IT 도구
  Daum Map API, SQLite, Google Matarial
  
-## 동작 사진
+## 앞으로의 계획
+1. 코드리팩토링
+2. MVP패턴을 학습하여 효과적인 구조를 만들어 내는 것에 초점을 맞춘 개발 진행
